@@ -38,7 +38,7 @@ public class MotorTest extends LinearOpMode {
 
     private void initMotorHardware() {
         // Initialize the hardware variables. Note that the strings used here must correspond
-        leftFrontMotor = hardwareMap.get(DcMotor.class, "frontLeftMotor");
-        rightFrontMotor = hardwareMap.get(DcMotor.class, "frontRightMotor");
+        leftFrontMotor = hardwareMap.get(DcMotor.class, "shootMotorLeft");
+        rightFrontMotor = hardwareMap.get(DcMotor.class, "shootMotorRight");
     }
 }
