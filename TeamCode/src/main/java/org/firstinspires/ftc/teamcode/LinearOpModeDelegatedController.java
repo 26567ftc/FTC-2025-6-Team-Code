@@ -4,46 +4,59 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name="OmniDrive_LinearOpMode_Delegated", group="Robot")
 public class LinearOpModeDelegatedController extends LinearOpMode {
-    private  OmniDriveController driveController;
-    private ElapsedTime runtime = new ElapsedTime();
 
-    final OmniDriveController.MotorDefinition[] MOTOR_DEFINITIONS = {
-            new OmniDriveController.MotorDefinition("frontLeftMotor", DcMotor.Direction.REVERSE),
-            new OmniDriveController.MotorDefinition("backLeftMotor", DcMotor.Direction.REVERSE),
-            new OmniDriveController.MotorDefinition("frontRightMotor", DcMotor.Direction.FORWARD),
-            new OmniDriveController.MotorDefinition("backRightMotor", DcMotor.Direction.FORWARD)
+    public static final float DEFAULT_SPEED_COEF = 0.5f;
+    public static final float SLOW_SPEED_COEF = 0.25f;
+    public static final float FAST_SPEED_COEF = 1.0f;
+
+
+    public static OmniDriveController driveController;
+    public static ElapsedTime runtime = new ElapsedTime();
+
+    final MotorDefinition[] MOTOR_DEFINITIONS = {
+            new MotorDefinition("frontLeftMotor", DcMotor.Direction.REVERSE),
+            new MotorDefinition("backLeftMotor", DcMotor.Direction.REVERSE),
+            new MotorDefinition("frontRightMotor", DcMotor.Direction.FORWARD),
+            new MotorDefinition("backRightMotor", DcMotor.Direction.FORWARD)
     };
 
 
     @Override
     public void runOpMode() {
-        driveController = new OmniDriveController(this.hardwareMap, MOTOR_DEFINITIONS);
+        driveController = new OmniDriveController();
+        RobotUtility.Hardware.Init(hardwareMap, MOTOR_DEFINITIONS);
 
         telemetry.addLine("Robot Ready.");
         telemetry.update();
 
-        /* Wait for the game driver to press play */
         waitForStart();
         runtime.reset();
 
         /* Run until the driver presses stop */
         while (opModeIsActive()) {
+            telemetry.addData("Status", "Run Time: " + runtime.toString());
+
             handleDrive();
+            driveController.printHeader();
+            driveController.printMotorPowerInfo();
+
+            telemetry.update();
         }
     }
 
     private void handleDrive() {
-        float speedCoef = 0.5f; // default matches previous behavior which divided by 2
-        if (gamepad2.left_bumper) {
-            speedCoef = 0.25f; // quarter speed
-        } else if (gamepad2.right_bumper) {
-            speedCoef = 1.0f; // full speed (fixes empty branch in original OpMode)
-        }
+
+        float speedCoef = DEFAULT_SPEED_COEF;
+
+        if (gamepad2.left_bumper)
+            speedCoef = SLOW_SPEED_COEF;
+        else if (gamepad2.right_bumper)
+            speedCoef = FAST_SPEED_COEF;
+
 
         OmniDriveController.DriveInput input = new OmniDriveController.DriveInput(
                 gamepad2.left_stick_y,
@@ -52,6 +65,6 @@ public class LinearOpModeDelegatedController extends LinearOpMode {
                 speedCoef
         );
 
-        driveController.Update(input);
+        driveController.driveFromInput(input);
     }
 }

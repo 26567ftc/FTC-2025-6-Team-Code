@@ -1,21 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 
 //This is a class containing all logic for handling robot-relative Omni-Drive, decoupled from hardware and OpMode(s)
 //Adapted from OmniDrive_LinearOoMode
 public class OmniDriveController {
-    public static class MotorDefinition{
-        public String key;
-        public DcMotor.Direction direction;
-
-        public  MotorDefinition(String key, DcMotor.Direction direction){
-            this.key = key;
-            this.direction = direction;
-        }
-    }
-
     public static class  DriveInput{
         double driveInput, strafeInput, turnInput;
         float speedCoefficient;
@@ -28,44 +17,24 @@ public class OmniDriveController {
             this.speedCoefficient = speedCoefficient;
         }
     }
-    private HardwareMap hardwareMap;
 
-    private MotorDefinition[] motors;
-
-    private DcMotor //Motors
-            leftFrontMotor, rightFrontMotor,
-               //                 //
-               //                //
-            leftBackMotor, rightBackMotor;
+    
+    double leftFrontPower;
+    double rightFrontPower;
+    double leftBackPower;
+    double rightBackPower;
 
 
 
-    public OmniDriveController(HardwareMap hardwareMap, MotorDefinition[] motorConfigs){
-        this.hardwareMap = hardwareMap;
-        this.motors = motorConfigs;
+    public OmniDriveController(){
 
-        setMotors();
     }
 
-    private void setMotors()
-    {
-        leftFrontMotor = setMotor(motors[0]);
-        leftBackMotor = setMotor(motors[1]);
-        rightFrontMotor = setMotor(motors[2]);
-        rightBackMotor = setMotor(motors[3]);
-    }
-
-    private DcMotor setMotor(MotorDefinition motor){
-        DcMotor hardware = hardwareMap.get(DcMotor.class, motor.key);
-        hardware.setDirection(motor.direction);
-        return hardware;
-    }
-
-    public void Update(DriveInput input) {
-        double leftFrontPower  = input.driveInput + input.strafeInput + input.turnInput;
-        double rightFrontPower = input.driveInput - input.strafeInput - input.turnInput;
-        double leftBackPower   = input.driveInput - input.strafeInput + input.turnInput;
-        double rightBackPower  = input.driveInput + input.strafeInput - input.turnInput;
+    public void driveFromInput(DriveInput input) {
+        leftFrontPower  = input.driveInput + input.strafeInput + input.turnInput;
+        rightFrontPower = input.driveInput - input.strafeInput - input.turnInput;
+        leftBackPower   = input.driveInput - input.strafeInput + input.turnInput;
+        rightBackPower  = input.driveInput + input.strafeInput - input.turnInput;
 
         // Normalize the values so no wheel power exceeds 100%
         // This ensures that the robot maintains the desired motion.
@@ -87,9 +56,20 @@ public class OmniDriveController {
         input.speedCoefficient = Math.max(0, input.speedCoefficient);
 
         // Send calculated power to wheels
-        leftFrontMotor.setPower(leftFrontPower * input.speedCoefficient);
-        rightFrontMotor.setPower(rightFrontPower * input.speedCoefficient);
-        leftBackMotor.setPower(leftBackPower * input.speedCoefficient);
-        rightBackMotor.setPower(rightBackPower * input.speedCoefficient);
+        RobotUtility.Hardware.leftFrontMotor.setPower(leftFrontPower * input.speedCoefficient);
+        RobotUtility.Hardware.rightFrontMotor.setPower(rightFrontPower * input.speedCoefficient);
+        RobotUtility.Hardware.leftBackMotor.setPower(leftBackPower * input.speedCoefficient);
+        RobotUtility.Hardware.rightBackMotor.setPower(rightBackPower * input.speedCoefficient);
+    }
+
+    public void printHeader() {
+        telemetry.addLine(" ");
+        telemetry.addLine("===================================");
+        telemetry.addLine("OmniDrive Info:");
+    }
+
+    public void printMotorPowerInfo() {
+        telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
+        telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
     }
 }
