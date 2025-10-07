@@ -16,7 +16,6 @@ public class RobotUtility {
         public static HardwareMap hardwareMap;
         public static Gamepad DriveGamepad;
         public static Gamepad ScoreGamepad;
-
         static LinearOpMode mainController;
 
         public static void Init(HardwareMap hardwareMap, MotorDefinition[] motorDefinitions, LinearOpMode mainController) {

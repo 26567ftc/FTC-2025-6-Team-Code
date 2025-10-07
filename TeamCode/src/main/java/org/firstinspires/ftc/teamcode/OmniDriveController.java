@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 //This is a class containing all logic for handling robot-relative Omni-Drive, decoupled from hardware and OpMode(s)
 //Adapted from OmniDrive_LinearOoMode
@@ -62,13 +62,13 @@ public class OmniDriveController {
         RobotUtility.Hardware.rightBackMotor.setPower(rightBackPower * input.speedCoefficient);
     }
 
-    public void printHeader() {
+    public void printHeader(Telemetry telemetry) {
         telemetry.addLine(" ");
         telemetry.addLine("===================================");
         telemetry.addLine("OmniDrive Info:");
     }
 
-    public void printMotorPowerInfo() {
+    public void printMotorPowerInfo(Telemetry telemetry) {
         telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
         telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
     }

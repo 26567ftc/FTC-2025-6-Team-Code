@@ -42,8 +42,8 @@ public class LinearOpModeDelegatedController extends LinearOpMode {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
 
             handleDrive();
-            driveController.printHeader();
-            driveController.printMotorPowerInfo();
+            driveController.printHeader(telemetry);
+            driveController.printMotorPowerInfo(telemetry);
 
             telemetry.update();
         }
