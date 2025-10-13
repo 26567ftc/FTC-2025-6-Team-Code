@@ -3,13 +3,12 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @TeleOp(name="MotorTest_LinearOpMode", group="Robot")
 public class MotorTest extends LinearOpMode {
 
-    private DcMotor leftFrontMotor = null;
-    private DcMotor rightFrontMotor = null;
+    private DcMotor shootMotorLeft = null;
+    private DcMotor shootMotorRight = null;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -25,20 +24,20 @@ public class MotorTest extends LinearOpMode {
 
         /* Run until the driver presses stop */
         while (opModeIsActive()) {
-                leftFrontMotor.setPower(gamepad1.right_trigger);
-                rightFrontMotor.setPower(gamepad1.right_trigger);
+                shootMotorLeft.setPower(gamepad1.right_trigger);
+                shootMotorRight.setPower(gamepad1.right_trigger);
         }
     }
 
     private void setMotorDirections() {
-        leftFrontMotor.setDirection(
+        shootMotorLeft.setDirection(
                 DcMotor.Direction.REVERSE);
-        rightFrontMotor.setDirection(DcMotor.Direction.FORWARD);
+        shootMotorRight.setDirection(DcMotor.Direction.FORWARD);
     }
 
     private void initMotorHardware() {
         // Initialize the hardware variables. Note that the strings used here must correspond
-        leftFrontMotor = hardwareMap.get(DcMotor.class, "shootMotorLeft");
-        rightFrontMotor = hardwareMap.get(DcMotor.class, "shootMotorRight");
+        shootMotorLeft = hardwareMap.get(DcMotor.class, "shootMotorLeft");
+        shootMotorRight = hardwareMap.get(DcMotor.class, "shootMotorRight");
     }
 }
