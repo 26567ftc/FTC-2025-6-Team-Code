@@ -39,7 +39,7 @@ public class OmniDriveController {
         // Normalize the values so no wheel power exceeds 100%
         // This ensures that the robot maintains the desired motion.
         double max;
-        
+
         max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
         max = Math.max(max, Math.abs(leftBackPower));
         max = Math.max(max, Math.abs(rightBackPower));

@@ -4,7 +4,6 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -14,8 +13,8 @@ public class LinearOpModeDelegatedController extends LinearOpMode {
     public static final float DEFAULT_SPEED_COEF = 0.5f;
     public static final float SLOW_SPEED_COEF = 0.25f;
     public static final float FAST_SPEED_COEF = 1.0f;
-    public static final float FEEDER_REST_ANGLE = 0;
-    public static final float FEEDER_ACTIVE_ANGLE = 180;
+    public static final double FEEDER_REST_ANGLE = 0;
+    public static final double FEEDER_ACTIVE_ANGLE = 180;
 
     boolean enableShooter = true;
     float shootPower = 0;
@@ -44,6 +43,7 @@ public class LinearOpModeDelegatedController extends LinearOpMode {
 
         shooterFeeder = hardwareMap.get(Servo.class, "shootFeeder");
         shooterFeeder.setDirection(Servo.Direction.FORWARD);
+        shooterFeeder.setPosition(FEEDER_REST_ANGLE);
 
         telemetry.addLine("Robot Ready.");
         telemetry.update();
@@ -65,16 +65,23 @@ public class LinearOpModeDelegatedController extends LinearOpMode {
             if(RobotUtility.Hardware.shootGamepad.yWasReleased()) enableShooter = !enableShooter;
             if(enableShooter) shootPower = 0;
 
+            if(RobotUtility.Hardware.shootGamepad.aWasPressed()) shooterFeeder.setPosition(FEEDER_ACTIVE_ANGLE);
+            if(RobotUtility.Hardware.shootGamepad.aWasReleased()) shooterFeeder.setPosition(FEEDER_REST_ANGLE);
+
             RobotUtility.Hardware.shootRightMotor.setPower(shootPower);
             RobotUtility.Hardware.shootLeftMotor.setPower(shootPower);
-
-
 
             telemetry.addLine("");
             telemetry.addLine("Shooter Info:");
             telemetry.addLine("Shoot Enable: " + enableShooter);
             if(!enableShooter) telemetry.addLine("Shoot Disabled. Enable it by pressing: Y");
             telemetry.addLine("Shoot Power: " +  shootPower);
+            telemetry.addLine("");
+
+            telemetry.addLine("Fire by pressing & holding 'a'");
+            telemetry.addData("Current Feeder Position:", "%000.0", shooterFeeder.getPosition());
+            telemetry.addData("Active Feeder Position:", "%000.0", FEEDER_ACTIVE_ANGLE);
+            telemetry.addData("Resting Feeder Position:", "%000.0", FEEDER_REST_ANGLE);
             telemetry.update();
         }
     }
