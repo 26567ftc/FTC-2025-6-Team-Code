@@ -14,9 +14,10 @@ public class LinearOpModeDelegatedController extends LinearOpMode {
     public static final float SLOW_SPEED_COEF = 0.25f;
     public static final float FAST_SPEED_COEF = 1.0f;
     public static final double FEEDER_REST_ANGLE = 0;
-    public static final double FEEDER_ACTIVE_ANGLE = 180;
+    public static final double FEEDER_ACTIVE_ANGLE = 0.5;
 
     boolean enableShooter = true;
+    boolean enableFeeder = true;
     float shootPower = 0;
     Servo shooterFeeder;
 
@@ -58,30 +59,41 @@ public class LinearOpModeDelegatedController extends LinearOpMode {
             driveController.printHeader(telemetry);
             driveController.printMotorPowerInfo(telemetry);
 
+            shootPower = 0.75f;
 
-            shootPower = 0.5f;
-            if(RobotUtility.Hardware.shootGamepad.a) shootPower = 0.35f;
+            //Shooter Enabling/Disabling
+                if(RobotUtility.Hardware.shootGamepad.yWasReleased()) enableShooter = !enableShooter;
+                if(enableShooter) shootPower = 0;
+                RobotUtility.Hardware.shootRightMotor.setPower(shootPower);
+                RobotUtility.Hardware.shootLeftMotor.setPower(shootPower);
 
-            if(RobotUtility.Hardware.shootGamepad.yWasReleased()) enableShooter = !enableShooter;
-            if(enableShooter) shootPower = 0;
+            //Shooter Feeder Enabling/Disabling
+                if(RobotUtility.Hardware.shootGamepad.dpadDownWasReleased()) enableFeeder = !enableShooter;
 
-            if(RobotUtility.Hardware.shootGamepad.aWasPressed()) shooterFeeder.setPosition(FEEDER_ACTIVE_ANGLE);
-            if(RobotUtility.Hardware.shootGamepad.aWasReleased()) shooterFeeder.setPosition(FEEDER_REST_ANGLE);
+            //Shooter Feeder Control
+                if(enableFeeder){
+                    if(!RobotUtility.Hardware.shootGamepad.a) shooterFeeder.setPosition(FEEDER_ACTIVE_ANGLE);
+                    else shooterFeeder.setPosition(FEEDER_REST_ANGLE);
+                }
 
-            RobotUtility.Hardware.shootRightMotor.setPower(shootPower);
-            RobotUtility.Hardware.shootLeftMotor.setPower(shootPower);
+            //Telemetry------------------------------------------------------------------------------------
 
-            telemetry.addLine("");
-            telemetry.addLine("Shooter Info:");
-            telemetry.addLine("Shoot Enable: " + enableShooter);
-            if(!enableShooter) telemetry.addLine("Shoot Disabled. Enable it by pressing: Y");
-            telemetry.addLine("Shoot Power: " +  shootPower);
-            telemetry.addLine("");
+            //Shooter Data
+                telemetry.addLine("");
+                telemetry.addLine("Shooter Info:");
+                telemetry.addLine("Shoot Enabled: " + enableShooter);
+                if(!enableShooter) telemetry.addLine("Shoot Disabled. Enable it by pressing: Y");
+                telemetry.addLine("Shoot Power: " +  shootPower);
+                telemetry.addLine("");
 
-            telemetry.addLine("Fire by pressing & holding 'a'");
-            telemetry.addData("Current Feeder Position:", "%000.0", shooterFeeder.getPosition());
-            telemetry.addData("Active Feeder Position:", "%000.0", FEEDER_ACTIVE_ANGLE);
-            telemetry.addData("Resting Feeder Position:", "%000.0", FEEDER_REST_ANGLE);
+            //Shooter Feeder Data
+                telemetry.addData("Servo Position", shooterFeeder.getPosition());
+                telemetry.addData("Active Servo Position", FEEDER_ACTIVE_ANGLE);
+                telemetry.addData("Rest Servo Position", FEEDER_ACTIVE_ANGLE);
+                telemetry.addLine("");
+
+            telemetry.addLine("Fire by pressing & holding 'A'");
+            
             telemetry.update();
         }
     }
@@ -99,7 +111,7 @@ public class LinearOpModeDelegatedController extends LinearOpMode {
         OmniDriveController.DriveInput input = new OmniDriveController.DriveInput(
                 RobotUtility.Hardware.DriveGamepad.left_stick_y,
                 -RobotUtility.Hardware.DriveGamepad.left_stick_x,
-                RobotUtility.Hardware.DriveGamepad.right_stick_x,
+                -RobotUtility.Hardware.DriveGamepad.right_stick_x,
                 speedCoef
         );
 
