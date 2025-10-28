@@ -16,10 +16,13 @@ public class LinearOpModeDelegatedController extends LinearOpMode {
     public static final double FEEDER_REST_ANGLE = 0;
     public static final double FEEDER_ACTIVE_ANGLE = 0.5;
 
+    public static final double INTAKE_REST_ANGLE = 0;
+    public static final double INTAKE_ACTIVE_ANGLE = 0.5;
+
     boolean enableShooter = true;
-    boolean enableFeeder = true;
     float shootPower = 0;
     Servo shooterFeeder;
+    Servo intakeFeeder;
 
     public static OmniDriveController driveController;
     public static ElapsedTime runtime = new ElapsedTime();
@@ -46,6 +49,10 @@ public class LinearOpModeDelegatedController extends LinearOpMode {
         shooterFeeder.setDirection(Servo.Direction.FORWARD);
         shooterFeeder.setPosition(FEEDER_REST_ANGLE);
 
+        intakeFeeder = hardwareMap.get(Servo.class, "intakeFeeder");
+        intakeFeeder.setDirection(Servo.Direction.FORWARD);
+        intakeFeeder.setPosition(INTAKE_REST_ANGLE);
+
         telemetry.addLine("Robot Ready.");
         telemetry.update();
 
@@ -61,20 +68,30 @@ public class LinearOpModeDelegatedController extends LinearOpMode {
 
             shootPower = 0.75f;
 
+            if(RobotUtility.Hardware.shootGamepad.dpadDownWasReleased())
+                shootPower -= 0.05f;
+            else if(RobotUtility.Hardware.shootGamepad.dpadUpWasReleased())
+                shootPower += 0.05f;
+
+            if(shootPower > 1f)
+                shootPower = 1f;
+            else if (shootPower < 0f)
+                shootPower = 0f;
+
             //Shooter Enabling/Disabling
                 if(RobotUtility.Hardware.shootGamepad.yWasReleased()) enableShooter = !enableShooter;
-                if(enableShooter) shootPower = 0;
+                if(!enableShooter) shootPower = 0;
+
                 RobotUtility.Hardware.shootRightMotor.setPower(shootPower);
                 RobotUtility.Hardware.shootLeftMotor.setPower(shootPower);
 
-            //Shooter Feeder Enabling/Disabling
-                if(RobotUtility.Hardware.shootGamepad.dpadDownWasReleased()) enableFeeder = !enableShooter;
-
             //Shooter Feeder Control
-                if(enableFeeder){
-                    if(!RobotUtility.Hardware.shootGamepad.a) shooterFeeder.setPosition(FEEDER_ACTIVE_ANGLE);
-                    else shooterFeeder.setPosition(FEEDER_REST_ANGLE);
-                }
+                if(!RobotUtility.Hardware.shootGamepad.a) shooterFeeder.setPosition(FEEDER_ACTIVE_ANGLE);
+                else shooterFeeder.setPosition(FEEDER_REST_ANGLE);
+
+            //Intake Feeder Control
+                if(!RobotUtility.Hardware.shootGamepad.x) intakeFeeder.setPosition(INTAKE_ACTIVE_ANGLE);
+                else intakeFeeder.setPosition(INTAKE_REST_ANGLE);
 
             //Telemetry------------------------------------------------------------------------------------
 
@@ -87,9 +104,17 @@ public class LinearOpModeDelegatedController extends LinearOpMode {
                 telemetry.addLine("");
 
             //Shooter Feeder Data
+                telemetry.addLine("Feeder Info:");
                 telemetry.addData("Servo Position", shooterFeeder.getPosition());
                 telemetry.addData("Active Servo Position", FEEDER_ACTIVE_ANGLE);
                 telemetry.addData("Rest Servo Position", FEEDER_ACTIVE_ANGLE);
+                telemetry.addLine("");
+
+            //Intake Data
+                telemetry.addLine("Intake Info:");
+                telemetry.addData("Servo Position", intakeFeeder.getPosition());
+                telemetry.addData("Active Servo Position", INTAKE_ACTIVE_ANGLE);
+                telemetry.addData("Rest Servo Position", INTAKE_REST_ANGLE);
                 telemetry.addLine("");
 
             telemetry.addLine("Fire by pressing & holding 'A'");
