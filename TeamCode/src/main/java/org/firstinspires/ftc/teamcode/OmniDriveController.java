@@ -5,7 +5,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 //This is a class containing all logic for handling robot-relative Omni-Drive, decoupled from hardware and OpMode(s)
 //Adapted from OmniDrive_LinearOoMode
 public class OmniDriveController {
-    public static class  DriveInput{
+    public static class DriveInput{
         double driveInput, strafeInput, turnInput;
         float speedCoefficient;
 

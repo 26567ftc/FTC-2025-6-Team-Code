@@ -17,10 +17,13 @@ public class LinearOpModeDelegatedController extends LinearOpMode {
     public static final double FEEDER_ACTIVE_ANGLE = 0.5;
 
     public static final double INTAKE_REST_ANGLE = 0;
-    public static final double INTAKE_ACTIVE_ANGLE = 0.5;
+    public static final double INTAKE_ACTIVE_ANGLE = 0.75;
+    public static final float DEFUALT_SHOOT_POWER = 0.55f;
+    public static final float FAR_SHOOT_POWER = 0.65f;
 
-    boolean enableShooter = true;
-    float shootPower = 0;
+
+    boolean enableShooter = false;
+    float shootPower = DEFUALT_SHOOT_POWER;
     Servo shooterFeeder;
     Servo intakeFeeder;
 
@@ -59,6 +62,7 @@ public class LinearOpModeDelegatedController extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
+
         while (opModeIsActive()) {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
 
@@ -66,17 +70,10 @@ public class LinearOpModeDelegatedController extends LinearOpMode {
             driveController.printHeader(telemetry);
             driveController.printMotorPowerInfo(telemetry);
 
-            shootPower = 0.75f;
-
             if(RobotUtility.Hardware.shootGamepad.dpadDownWasReleased())
-                shootPower -= 0.05f;
+                shootPower = DEFUALT_SHOOT_POWER;
             else if(RobotUtility.Hardware.shootGamepad.dpadUpWasReleased())
-                shootPower += 0.05f;
-
-            if(shootPower > 1f)
-                shootPower = 1f;
-            else if (shootPower < 0f)
-                shootPower = 0f;
+                shootPower = FAR_SHOOT_POWER;
 
             //Shooter Enabling/Disabling
                 if(RobotUtility.Hardware.shootGamepad.yWasReleased()) enableShooter = !enableShooter;
