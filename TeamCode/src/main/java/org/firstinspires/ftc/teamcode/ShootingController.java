@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -11,29 +12,21 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  */
 public class ShootingController {
 
-    public static final double FEEDER_REST_ANGLE = 0;
-    public static final double FEEDER_ACTIVE_ANGLE = 0.5;
-
-    public static final double INTAKE_REST_ANGLE = 0;
-    public static final double INTAKE_ACTIVE_ANGLE = 0.75;
-
-    public static final float DEFAULT_SHOOT_POWER = 0.55f;
-    public static final float FAR_SHOOT_POWER = 0.65f;
 
     private boolean enableShooter = false;
-    private float shootPower = DEFAULT_SHOOT_POWER;
+    private float shootPower = RobotUtility.DEFAULT_SHOOT_POWER;
 
     private final Servo shooterFeeder;
-    private final Servo intakeFeeder;
+    private final DcMotor intakeFeeder;
+    boolean enableIntake = false;
 
     public ShootingController(HardwareMap hardwareMap) {
         shooterFeeder = hardwareMap.get(Servo.class, "shootFeeder");
         shooterFeeder.setDirection(Servo.Direction.FORWARD);
-        shooterFeeder.setPosition(FEEDER_REST_ANGLE);
+        shooterFeeder.setPosition(RobotUtility.FEEDER_ACTIVE_ANGLE);
 
-        intakeFeeder = hardwareMap.get(Servo.class, "intakeFeeder");
-        intakeFeeder.setDirection(Servo.Direction.FORWARD);
-        intakeFeeder.setPosition(INTAKE_REST_ANGLE);
+        intakeFeeder = hardwareMap.get(DcMotor.class, "intakeFeeder");
+        intakeFeeder.setDirection(DcMotor.Direction.FORWARD);
     }
 
     /**
@@ -42,9 +35,9 @@ public class ShootingController {
     public void update(Telemetry telemetry) {
         // Shoot power selection
         if (RobotUtility.Hardware.shootGamepad.dpadDownWasReleased())
-            shootPower = DEFAULT_SHOOT_POWER;
+            shootPower = RobotUtility.DEFAULT_SHOOT_POWER;
         else if (RobotUtility.Hardware.shootGamepad.dpadUpWasReleased())
-            shootPower = FAR_SHOOT_POWER;
+            shootPower = RobotUtility.FAR_SHOOT_POWER;
 
         // Enable/disable shooter
         if (RobotUtility.Hardware.shootGamepad.yWasReleased()) enableShooter = !enableShooter;
@@ -55,12 +48,18 @@ public class ShootingController {
         RobotUtility.Hardware.shootLeftMotor.setPower(shootPower);
 
         // Shooter feeder control (A to fire)
-        if (!RobotUtility.Hardware.shootGamepad.a) shooterFeeder.setPosition(FEEDER_ACTIVE_ANGLE);
-        else shooterFeeder.setPosition(FEEDER_REST_ANGLE);
+        if (!RobotUtility.Hardware.shootGamepad.a) shooterFeeder.setPosition(RobotUtility.FEEDER_ACTIVE_ANGLE
+);
+        else shooterFeeder.setPosition(RobotUtility.FEEDER_REST_ANGLE);
 
         // Intake feeder control (X to active)
-        if (!RobotUtility.Hardware.shootGamepad.x) intakeFeeder.setPosition(INTAKE_ACTIVE_ANGLE);
-        else intakeFeeder.setPosition(INTAKE_REST_ANGLE);
+        if (RobotUtility.Hardware.shootGamepad.xWasReleased())
+            enableIntake = !enableIntake;
+
+        if(enableIntake)
+            intakeFeeder.setPower(1);
+        else
+            intakeFeeder.setPower(0);
 
         // Telemetry
         telemetry.addLine("");
@@ -72,14 +71,15 @@ public class ShootingController {
 
         telemetry.addLine("Feeder Info:");
         telemetry.addData("Servo Position", shooterFeeder.getPosition());
-        telemetry.addData("Active Servo Position", FEEDER_ACTIVE_ANGLE);
-        telemetry.addData("Rest Servo Position", FEEDER_REST_ANGLE);
+        telemetry.addData("Active Servo Position", RobotUtility.FEEDER_ACTIVE_ANGLE
+
+);
+        telemetry.addData("Rest Servo Position", RobotUtility.FEEDER_REST_ANGLE);
         telemetry.addLine("");
 
         telemetry.addLine("Intake Info:");
-        telemetry.addData("Servo Position", intakeFeeder.getPosition());
-        telemetry.addData("Active Servo Position", INTAKE_ACTIVE_ANGLE);
-        telemetry.addData("Rest Servo Position", INTAKE_REST_ANGLE);
+        telemetry.addData("Enabled:", enableIntake);
+
         telemetry.addLine("");
 
         telemetry.addLine("Fire by pressing & holding 'A'");

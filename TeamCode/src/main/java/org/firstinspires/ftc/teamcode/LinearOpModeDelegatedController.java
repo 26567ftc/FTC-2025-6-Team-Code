@@ -4,12 +4,10 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name="OmniDrive_LinearOpMode_Delegated", group="Robot")
 public class LinearOpModeDelegatedController extends LinearOpMode {
-
     public static final float DEFAULT_SPEED_COEF = 0.5f;
     public static final float SLOW_SPEED_COEF = 0.25f;
     public static final float FAST_SPEED_COEF = 1.0f;
@@ -19,17 +17,9 @@ public class LinearOpModeDelegatedController extends LinearOpMode {
     public static OmniDriveController driveController;
     public static ElapsedTime runtime = new ElapsedTime();
 
-    final MotorDefinition[] DRIVE_MOTOR_DEFINITIONS = {
-            new MotorDefinition("frontLeftMotor", DcMotor.Direction.FORWARD),
-            new MotorDefinition("backLeftMotor", DcMotor.Direction.FORWARD),
-            new MotorDefinition("frontRightMotor", DcMotor.Direction.REVERSE),
-            new MotorDefinition("backRightMotor", DcMotor.Direction.REVERSE)
-    };
+        final MotorDefinition[] DRIVE_MOTOR_DEFINITIONS = RobotUtility.DEFAULT_DRIVE_MOTOR_DEFINITIONS;
 
-    final MotorDefinition[] SHOOT_MOTOR_DEFINITIONS = {
-            new MotorDefinition("shootMotorLeft", DcMotor.Direction.REVERSE),
-            new MotorDefinition("shootMotorRight", DcMotor.Direction.FORWARD),
-    };
+        final MotorDefinition[] SHOOT_MOTOR_DEFINITIONS = RobotUtility.DEFAULT_SHOOT_MOTOR_DEFINITIONS;
 
 
     @Override
@@ -37,8 +27,8 @@ public class LinearOpModeDelegatedController extends LinearOpMode {
         driveController = new OmniDriveController();
         RobotUtility.Hardware.Init(hardwareMap, DRIVE_MOTOR_DEFINITIONS, SHOOT_MOTOR_DEFINITIONS, this);
 
-    // initialize shooting controller (handles servos, motor power and telemetry)
-    shootingController = new ShootingController(hardwareMap);
+        // initialize shooting controller (handles servos, motor power and telemetry)
+        shootingController = new ShootingController(hardwareMap);
 
         telemetry.addLine("Robot Ready.");
         telemetry.update();
@@ -78,6 +68,6 @@ public class LinearOpModeDelegatedController extends LinearOpMode {
                 speedCoef
         );
 
-        driveController.driveFromInput(input);
+        driveController.moveRobot(input);
     }
 }

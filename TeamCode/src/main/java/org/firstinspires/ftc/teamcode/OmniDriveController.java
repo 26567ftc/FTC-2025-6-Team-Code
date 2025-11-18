@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 //This is a class containing all logic for handling robot-relative Omni-Drive, decoupled from hardware and OpMode(s)
 //Adapted from OmniDrive_LinearOoMode
@@ -18,19 +20,42 @@ public class OmniDriveController {
         }
     }
 
-    
+    /**
+     * Compute auto-drive commands to approach an AprilTag and apply them to the robot.
+     * Uses constants from RobotUtility.
+     */
+    public void autoDriveToAprilTag(AprilTagDetection desiredTag, Telemetry telemetry) {
+        if (desiredTag == null) return;
+
+        double rangeError = (desiredTag.ftcPose.range - RobotUtility.DEFAULT_DESIRED_DISTANCE);
+        double headingError = desiredTag.ftcPose.bearing;
+        double yawError = desiredTag.ftcPose.yaw;
+
+        double drive = Range.clip(rangeError * RobotUtility.SPEED_GAIN, -RobotUtility.MAX_AUTO_SPEED, RobotUtility.MAX_AUTO_SPEED);
+        double turn = Range.clip(headingError * RobotUtility.TURN_GAIN, -RobotUtility.MAX_AUTO_TURN, RobotUtility.MAX_AUTO_TURN);
+        double strafe = Range.clip(-yawError * RobotUtility.STRAFE_GAIN, -RobotUtility.MAX_AUTO_STRAFE, RobotUtility.MAX_AUTO_STRAFE);
+
+        moveRobot(-drive, strafe, turn);
+        if (telemetry != null) telemetry.addData("Auto","Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
+    }
+
     double leftFrontPower;
     double rightFrontPower;
     double leftBackPower;
     double rightBackPower;
 
-
-
     public OmniDriveController(){
 
     }
 
-    public void driveFromInput(DriveInput input) {
+    public void moveRobot(double drive, double strafe, double turn, float speedMult){
+        DriveInput input = new DriveInput(drive, strafe, turn, speedMult);
+        moveRobot(input);
+    }
+    public void moveRobot(double drive, double strafe, double turn) {
+        moveRobot(drive, strafe, turn, 1f);
+    }
+    public void moveRobot(DriveInput input) {
         leftFrontPower  = input.driveInput + input.strafeInput + input.turnInput;
         rightFrontPower = input.driveInput - input.strafeInput - input.turnInput;
         leftBackPower   = input.driveInput - input.strafeInput + input.turnInput;
