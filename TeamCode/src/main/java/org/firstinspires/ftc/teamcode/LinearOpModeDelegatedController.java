@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
@@ -52,7 +51,7 @@ public class LinearOpModeDelegatedController extends LinearOpMode {
             driveController.printMotorPowerInfo(telemetry);
 
             // Shooting logic and telemetry now handled by ShootingController
-            shootingController.update(telemetry);
+            shootingController.update();
             
             telemetry.update();
         }
@@ -72,14 +71,12 @@ public class LinearOpModeDelegatedController extends LinearOpMode {
         }
     }
     private void handleDrive() {
-
         float speedCoef = RobotUtility.DEFAULT_SPEED_COEF;
 
         if (RobotUtility.Hardware.DriveGamepad.left_bumper)
             speedCoef = RobotUtility.SLOW_SPEED_COEF;
         else if (RobotUtility.Hardware.DriveGamepad.right_bumper)
             speedCoef = RobotUtility.FAST_SPEED_COEF;
-
 
         OmniDriveController.DriveInput input = new OmniDriveController.DriveInput(
                 RobotUtility.Hardware.DriveGamepad.left_stick_y,

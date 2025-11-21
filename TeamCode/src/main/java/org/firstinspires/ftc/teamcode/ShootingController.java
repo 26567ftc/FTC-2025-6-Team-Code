@@ -31,15 +31,24 @@ public class ShootingController {
     /**
      * Call this each loop to update shooter state from gamepad and write telemetry.
      */
-    public void update(Telemetry telemetry) {
+    public void update(){
+        updateAuto(
+                /*Set Shooter Power LOW input*/ RobotUtility.Hardware.shootGamepad.dpadDownWasReleased(),
+                /*Set Shooter Power HIGH input*/ RobotUtility.Hardware.shootGamepad.dpadUpWasReleased(),
+                /*Enable Shooter input*/ RobotUtility.Hardware.shootGamepad.yWasReleased(),
+                /*Hold to fire Fire (Feeder) Input*/ RobotUtility.Hardware.shootGamepad.a,
+                /*Enable Intake Input*/ RobotUtility.Hardware.shootGamepad.xWasReleased()
+                );
+    }
+    public void updateAuto(boolean setDefaultPow, boolean setFarPow, boolean toggleShoter, boolean fire, boolean toggleIntake) {
         // Shoot power selection
-        if (RobotUtility.Hardware.shootGamepad.dpadDownWasReleased())
+        if (setDefaultPow)
             shootPower = RobotUtility.DEFAULT_SHOOT_POWER;
-        else if (RobotUtility.Hardware.shootGamepad.dpadUpWasReleased())
+        else if (setFarPow)
             shootPower = RobotUtility.FAR_SHOOT_POWER;
 
         // Enable/disable shooter
-        if (RobotUtility.Hardware.shootGamepad.yWasReleased()) enableShooter = !enableShooter;
+        if (toggleShoter) enableShooter = !enableShooter;
         if (!enableShooter) shootPower = 0;
 
         // Set shoot motors (motors are expected to be initialized by RobotUtility.Hardware.Init)
@@ -47,20 +56,20 @@ public class ShootingController {
         RobotUtility.Hardware.shootLeftMotor.setPower(shootPower);
 
         // Shooter feeder control (A to fire)
-        if (!RobotUtility.Hardware.shootGamepad.a) shooterFeeder.setPosition(RobotUtility.FEEDER_ACTIVE_ANGLE
-);
+        if (!fire) shooterFeeder.setPosition(RobotUtility.FEEDER_ACTIVE_ANGLE);
         else shooterFeeder.setPosition(RobotUtility.FEEDER_REST_ANGLE);
 
         // Intake feeder control (X to active)
-        if (RobotUtility.Hardware.shootGamepad.xWasReleased())
+        if (toggleIntake)
             enableIntake = !enableIntake;
 
         if(enableIntake)
             intakeFeeder.setPower(1);
         else
             intakeFeeder.setPower(0);
+    }
 
-        // Telemetry
+    public void printTelemetry(Telemetry telemetry) {
         telemetry.addLine("");
         telemetry.addLine("Shooter Info:");
         telemetry.addLine("Shoot Enabled: " + enableShooter);
@@ -70,9 +79,7 @@ public class ShootingController {
 
         telemetry.addLine("Feeder Info:");
         telemetry.addData("Servo Position", shooterFeeder.getPosition());
-        telemetry.addData("Active Servo Position", RobotUtility.FEEDER_ACTIVE_ANGLE
-
-);
+        telemetry.addData("Active Servo Position", RobotUtility.FEEDER_ACTIVE_ANGLE);
         telemetry.addData("Rest Servo Position", RobotUtility.FEEDER_REST_ANGLE);
         telemetry.addLine("");
 
