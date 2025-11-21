@@ -15,7 +15,6 @@ public class ShootingController {
 
     private boolean enableShooter = false;
     private float shootPower = RobotUtility.DEFAULT_SHOOT_POWER;
-
     private final Servo shooterFeeder;
     private final DcMotor intakeFeeder;
     boolean enableIntake = false;

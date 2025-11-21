@@ -6,13 +6,14 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+
 @TeleOp(name="OmniDrive_LinearOpMode_Delegated", group="Robot")
 public class LinearOpModeDelegatedController extends LinearOpMode {
-    public static final float DEFAULT_SPEED_COEF = 0.5f;
-    public static final float SLOW_SPEED_COEF = 0.25f;
-    public static final float FAST_SPEED_COEF = 1.0f;
     // Shooting handled by ShootingController
     ShootingController shootingController;
+
+    AprilTagManager aprilTagManager;
 
     public static OmniDriveController driveController;
     public static ElapsedTime runtime = new ElapsedTime();
@@ -30,6 +31,10 @@ public class LinearOpModeDelegatedController extends LinearOpMode {
         // initialize shooting controller (handles servos, motor power and telemetry)
         shootingController = new ShootingController(hardwareMap);
 
+        //Initialize April Tag Detection
+        aprilTagManager = new AprilTagManager(hardwareMap, true, RobotUtility.DEFAULT_WEBCAM_NAME);
+        aprilTagManager.init();
+
         telemetry.addLine("Robot Ready.");
         telemetry.update();
 
@@ -40,7 +45,9 @@ public class LinearOpModeDelegatedController extends LinearOpMode {
         while (opModeIsActive()) {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
 
+            handleAutoDrive();
             handleDrive();
+
             driveController.printHeader(telemetry);
             driveController.printMotorPowerInfo(telemetry);
 
@@ -50,15 +57,28 @@ public class LinearOpModeDelegatedController extends LinearOpMode {
             telemetry.update();
         }
     }
+    public void handleAutoDrive(){
+        if (aprilTagManager.getDetected()) {
+            AprilTagDetection desiredTag = aprilTagManager.desiredTag;
 
+            if (RobotUtility.Hardware.DriveGamepad.dpad_right)
+                driveController.autoDriveToAprilTag(desiredTag, telemetry);
+
+            telemetry.addData("\n>","HOLD Left-Bumper to Drive to Target\n");
+            telemetry.addData("Found", "ID %d (%s)", desiredTag.id, desiredTag.metadata.name);
+            telemetry.addData("Range",  "%5.1f inches", desiredTag.ftcPose.range);
+            telemetry.addData("Bearing","%3.0f degrees", desiredTag.ftcPose.bearing);
+            telemetry.addData("Yaw","%3.0f degrees", desiredTag.ftcPose.yaw);
+        }
+    }
     private void handleDrive() {
 
-        float speedCoef = DEFAULT_SPEED_COEF;
+        float speedCoef = RobotUtility.DEFAULT_SPEED_COEF;
 
         if (RobotUtility.Hardware.DriveGamepad.left_bumper)
-            speedCoef = SLOW_SPEED_COEF;
+            speedCoef = RobotUtility.SLOW_SPEED_COEF;
         else if (RobotUtility.Hardware.DriveGamepad.right_bumper)
-            speedCoef = FAST_SPEED_COEF;
+            speedCoef = RobotUtility.FAST_SPEED_COEF;
 
 
         OmniDriveController.DriveInput input = new OmniDriveController.DriveInput(

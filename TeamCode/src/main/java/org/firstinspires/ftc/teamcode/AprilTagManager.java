@@ -20,6 +20,9 @@ public class AprilTagManager {
     private final boolean useWebcam;
     private final String webcamName;
 
+    public boolean targetFound;
+    public AprilTagDetection desiredTag;
+
     private VisionPortal visionPortal;
     private AprilTagProcessor aprilTag;
 
@@ -31,7 +34,7 @@ public class AprilTagManager {
 
     public void init() {
         aprilTag = new AprilTagProcessor.Builder().build();
-        aprilTag.setDecimation(1);
+        aprilTag.setDecimation(2);
 
         if (useWebcam) {
             visionPortal = new VisionPortal.Builder()
@@ -46,14 +49,17 @@ public class AprilTagManager {
         }
     }
 
-    public List<AprilTagDetection> getDetections() {
-        if (aprilTag == null) return java.util.Collections.emptyList();
-        return aprilTag.getDetections();
-    }
+    public boolean getDetected() {
+        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+        for (AprilTagDetection detection : currentDetections)
+            if (detection.metadata != null)
+                if ((RobotUtility.DESIRED_TAG_ID < 0) || (detection.id == RobotUtility.DESIRED_TAG_ID)) { //  Check to see if we want to track towards this tag.
+                    targetFound = true;
+                    desiredTag = detection;
+                    break;
+                }
 
-    public VisionPortal.CameraState getCameraState() {
-        if (visionPortal == null) return null;
-        return visionPortal.getCameraState();
+        return targetFound;
     }
 
     public void setManualExposure(int exposureMS, int gain) {

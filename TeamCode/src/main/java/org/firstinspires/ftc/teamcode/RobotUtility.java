@@ -61,13 +61,13 @@ public class RobotUtility {
     // Auto-drive / AprilTag related defaults (moved from OpMode)
     public static final double DEFAULT_DESIRED_DISTANCE = 12.0 * 4; // inches
 
-    public static final double SPEED_GAIN  =  0.1/25;
-    public static final double STRAFE_GAIN =  0.1/25;
-    public static final double TURN_GAIN   =  0.1/25;
+    public static final double SPEED_GAIN  =  0.07/25;
+    public static final double STRAFE_GAIN =  0.07/25;
+    public static final double TURN_GAIN   =  0.07/25;
 
     public static final double MAX_AUTO_SPEED = 1;
     public static final double MAX_AUTO_STRAFE= 1;
-    public static final double MAX_AUTO_TURN  = 0.75;
+    public static final double MAX_AUTO_TURN  = 1;
 
     public static final float DEFAULT_SHOOT_POWER = 0.6f;
     public static final float FAR_SHOOT_POWER = 0.7f;
@@ -76,6 +76,10 @@ public class RobotUtility {
     public static final float FEEDER_REST_ANGLE = 0f;
 
     public static final int DESIRED_TAG_ID = -1;
+
+    public static final float DEFAULT_SPEED_COEF = 0.5f;
+    public static final float SLOW_SPEED_COEF = 0.25f;
+    public static final float FAST_SPEED_COEF = 1.0f;
 
     // Default MotorDefinition arrays for convenience
     public static final MotorDefinition[] DEFAULT_DRIVE_MOTOR_DEFINITIONS = new MotorDefinition[] {
