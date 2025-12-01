@@ -19,13 +19,13 @@ public class LinearOpModeDelegatedController extends LinearOpMode {
 
         final MotorDefinition[] DRIVE_MOTOR_DEFINITIONS = RobotUtility.DEFAULT_DRIVE_MOTOR_DEFINITIONS;
 
-        final MotorDefinition[] SHOOT_MOTOR_DEFINITIONS = RobotUtility.DEFAULT_SHOOT_MOTOR_DEFINITIONS;
+        final MotorDefinition SHOOT_MOTOR_DEFINITION = RobotUtility.SHOOT_MOTOR_DEFINITION;
 
 
     @Override
     public void runOpMode() {
         driveController = new OmniDriveController();
-        RobotUtility.Hardware.Init(hardwareMap, DRIVE_MOTOR_DEFINITIONS, SHOOT_MOTOR_DEFINITIONS, this);
+        RobotUtility.Hardware.Init(hardwareMap, DRIVE_MOTOR_DEFINITIONS, SHOOT_MOTOR_DEFINITION, this);
 
         // initialize shooting controller (handles servos, motor power and telemetry)
         shootingController = new ShootingController(hardwareMap);

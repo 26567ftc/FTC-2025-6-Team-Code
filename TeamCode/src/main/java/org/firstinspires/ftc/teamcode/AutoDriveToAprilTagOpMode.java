@@ -12,7 +12,7 @@ public class AutoDriveToAprilTagOpMode extends LinearOpMode {
     OmniDriveController driveController = null;
     // Use default motor definitions from RobotUtility
     final MotorDefinition[] DRIVE_MOTOR_DEFINITIONS = RobotUtility.DEFAULT_DRIVE_MOTOR_DEFINITIONS;
-    final MotorDefinition[] SHOOT_MOTOR_DEFINITIONS = RobotUtility.DEFAULT_SHOOT_MOTOR_DEFINITIONS;
+    final MotorDefinition SHOOT_MOTOR_DEFINITION = RobotUtility.SHOOT_MOTOR_DEFINITION;
 
     @Override public void runOpMode() {
 
@@ -21,7 +21,7 @@ public class AutoDriveToAprilTagOpMode extends LinearOpMode {
         aprilTagManager = new AprilTagManager(hardwareMap, true, RobotUtility.DEFAULT_WEBCAM_NAME);
         aprilTagManager.init();
         driveController = new OmniDriveController();
-        RobotUtility.Hardware.Init(hardwareMap, DRIVE_MOTOR_DEFINITIONS, SHOOT_MOTOR_DEFINITIONS, this);
+        RobotUtility.Hardware.Init(hardwareMap, DRIVE_MOTOR_DEFINITIONS, SHOOT_MOTOR_DEFINITION, this);
 
         aprilTagManager.setManualExposure(6, 250);  // Use low exposure time to reduce motion blur
 
