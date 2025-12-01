@@ -15,11 +15,11 @@ public class LinearOpModeDelegatedController extends LinearOpMode {
     AprilTagManager aprilTagManager;
 
     public static OmniDriveController driveController;
+
     public static ElapsedTime runtime = new ElapsedTime();
+    final MotorDefinition[] DRIVE_MOTOR_DEFINITIONS = RobotUtility.DEFAULT_DRIVE_MOTOR_DEFINITIONS;
 
-        final MotorDefinition[] DRIVE_MOTOR_DEFINITIONS = RobotUtility.DEFAULT_DRIVE_MOTOR_DEFINITIONS;
-
-        final MotorDefinition SHOOT_MOTOR_DEFINITION = RobotUtility.SHOOT_MOTOR_DEFINITION;
+    final MotorDefinition SHOOT_MOTOR_DEFINITION = RobotUtility.SHOOT_MOTOR_DEFINITION;
 
 
     @Override
