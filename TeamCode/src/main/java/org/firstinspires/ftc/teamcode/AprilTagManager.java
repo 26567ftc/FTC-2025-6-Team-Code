@@ -58,6 +58,8 @@ public class AprilTagManager {
                     desiredTag = detection;
                     break;
                 }
+                else  targetFound = false;
+
 
         return targetFound;
     }

@@ -67,12 +67,9 @@ public class RobotUtility {
     public static final float DEFAULT_SHOOT_POWER = 0.6f;
     public static final float FAR_SHOOT_POWER = 0.7f;
 
-    public final static int BLUE_GOAL_TAG_ID = 23;
+    public final static int BLUE_GOAL_TAG_ID = 20;
     public final static int RED_GOAL_TAG_ID = 24;
 
-    public static int[] GLOBAL_DESIRED_TAG_IDS = new int[] {
-            BLUE_GOAL_TAG_ID, RED_GOAL_TAG_ID
-    };
 
     /// 0 = Use GLOBAL_DESIRED_TAG_IDS
     /// 1 = RED Only

@@ -73,5 +73,7 @@ public class Auto_RED extends LinearOpMode{
         telemetry.addData("Range",  "%5.1f inches", desiredTag.ftcPose.range);
         telemetry.addData("Bearing","%3.0f degrees", desiredTag.ftcPose.bearing);
         telemetry.addData("Yaw","%3.0f degrees", desiredTag.ftcPose.yaw);
+
+        telemetry.update();
     }
 }
