@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 @Autonomous
-public class Auto_BLUE extends LinearOpMode{
+public class Auto_RED extends LinearOpMode{
     ShootingController shootingController;
     AprilTagManager aprilTagManager;
     public static OmniDriveController driveController;
@@ -19,7 +19,7 @@ public class Auto_BLUE extends LinearOpMode{
 
     @Override
     public void runOpMode() throws InterruptedException {
-        RobotUtility.tagDetectionFilter = 2;
+        RobotUtility.tagDetectionFilter = 1;
 
         driveController = new OmniDriveController();
         RobotUtility.Hardware.Init(hardwareMap, DRIVE_MOTOR_DEFINITIONS, SHOOT_MOTOR_DEFINITIONS, this);
