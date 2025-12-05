@@ -53,7 +53,7 @@ public class AprilTagManager {
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
         for (AprilTagDetection detection : currentDetections)
             if (detection.metadata != null)
-                if ((RobotUtility.DESIRED_TAG_ID < 0) || (detection.id == RobotUtility.DESIRED_TAG_ID)) { //  Check to see if we want to track towards this tag.
+                if (RobotUtility.FilterTagID(detection.id)) { //  Check to see if we want to track towards this tag.
                     targetFound = true;
                     desiredTag = detection;
                     break;
