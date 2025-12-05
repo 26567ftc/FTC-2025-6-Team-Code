@@ -12,6 +12,9 @@ public class Auto_RED extends LinearOpMode{
     AprilTagManager aprilTagManager;
     public static OmniDriveController driveController;
 
+    public boolean shooting;
+    public boolean hasToggledShooter;
+
     public static ElapsedTime runtime = new ElapsedTime();
     final MotorDefinition[] DRIVE_MOTOR_DEFINITIONS = RobotUtility.DEFAULT_DRIVE_MOTOR_DEFINITIONS;
 
@@ -47,23 +50,36 @@ public class Auto_RED extends LinearOpMode{
         while (opModeIsActive()) {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
 
-            handleAutoDrive();
+            shooting = handleAutoDrive()? true : shooting;
             driveController.printHeader(telemetry);
             driveController.printMotorPowerInfo(telemetry);
 
-            boolean foundTAG = aprilTagManager.getDetected();
+            aprilTagManager.getDetected();
+
+            if(shooting){
+                runtime.reset();
+                hasToggledShooter = false;
+            }
+            while(shooting){
                 shootingController.updateAuto(
                         true,
                         false,
-                        foundTAG, foundTAG, foundTAG);
+                        !hasToggledShooter, true, !hasToggledShooter);
+
+                hasToggledShooter = true;
+                if(runtime.seconds() > 3){
+                    shooting = false;
+                }
+            }
+
 
             telemetry.update();
         }
     }
 
-    public void handleAutoDrive(){
+    public boolean handleAutoDrive(){
         while (runtime.seconds() <= 1 && !aprilTagManager.targetFound){
-            driveController.moveRobot(0.2, 0,0);
+            driveController.moveRobot(-0.2, 0,0);
             aprilTagManager.getDetected();
 
             telemetry.addLine("Moving Away from wall");
@@ -83,14 +99,13 @@ public class Auto_RED extends LinearOpMode{
         if(aprilTagManager.targetFound) {
             AprilTagDetection desiredTag = aprilTagManager.desiredTag;
 
-            driveController.autoDriveToAprilTag(desiredTag, telemetry);
-
             telemetry.addData("Found", "ID %d (%s)", desiredTag.id, desiredTag.metadata.name);
             telemetry.addData("Range",  "%5.1f inches", desiredTag.ftcPose.range);
             telemetry.addData("Bearing","%3.0f degrees", desiredTag.ftcPose.bearing);
             telemetry.addData("Yaw","%3.0f degrees", desiredTag.ftcPose.yaw);
-        }
 
-        shootingController.update();
+            return driveController.autoDriveToAprilTag(desiredTag, telemetry);
+        }
+        return false;
     }
 }

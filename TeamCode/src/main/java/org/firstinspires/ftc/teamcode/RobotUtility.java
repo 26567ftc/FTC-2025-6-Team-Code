@@ -61,9 +61,10 @@ public class RobotUtility {
     // Auto-drive / AprilTag related defaults (moved from OpMode)
     public static final double DEFAULT_DESIRED_DISTANCE = 12.0 * 4; // inches
 
-    public static final double SPEED_GAIN  =  0.07/25;
-    public static final double STRAFE_GAIN =  0.07/25;
-    public static final double TURN_GAIN   =  0.07/25;
+    public static final double SPEED_GAIN  =  1; //1 = directly proportional to error, clamped between maximums.
+    public static final double STRAFE_GAIN =  1;
+    public static final double TURN_GAIN   =  1;
+    public static final double DESTINATION_ERROR_BUFFER = 0.075; //Auto drive is consider complete when distance/drive error >= to this
 
     public static final double MAX_AUTO_SPEED = 1;
     public static final double MAX_AUTO_STRAFE= 1;
@@ -75,10 +76,10 @@ public class RobotUtility {
     public static final float FEEDER_ACTIVE_ANGLE = 0.5f;
     public static final float FEEDER_REST_ANGLE = 0f;
 
-    public final static int BLUE_GOAL_TAG_ID = 23;
+    public final static int BLUE_GOAL_TAG_ID = 20;
     public final static int RED_GOAL_TAG_ID = 24;
 
-    /// 0 = Use GLOBAL_DESIRED_TAG_IDS
+    /// 0 = Anything
     /// 1 = RED Only
     /// 2 = BLUE Only
     public static int tagDetectionFilter = 0;

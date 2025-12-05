@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
+
 //This is a class containing all logic for handling robot-relative Omni-Drive, decoupled from hardware and OpMode(s)
 //Adapted from OmniDrive_LinearOoMode
 public class OmniDriveController {
@@ -24,8 +25,8 @@ public class OmniDriveController {
      * Compute auto-drive commands to approach an AprilTag and apply them to the robot.
      * Uses constants from RobotUtility.
      */
-    public void autoDriveToAprilTag(AprilTagDetection desiredTag, Telemetry telemetry) {
-        if (desiredTag == null) return;
+    public boolean autoDriveToAprilTag(AprilTagDetection desiredTag, Telemetry telemetry) {
+        if (desiredTag == null) return false;
 
         double rangeError = (desiredTag.ftcPose.range - RobotUtility.DEFAULT_DESIRED_DISTANCE);
         double headingError = desiredTag.ftcPose.bearing;
@@ -37,6 +38,8 @@ public class OmniDriveController {
 
         moveRobot(-drive, strafe, turn);
         if (telemetry != null) telemetry.addData("Auto","Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
+
+        return Math.abs(drive) <= RobotUtility.DESTINATION_ERROR_BUFFER;
     }
 
     double leftFrontPower;
