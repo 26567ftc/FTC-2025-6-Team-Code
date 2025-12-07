@@ -33,6 +33,7 @@ public class LinearOpModeDelegatedController extends LinearOpMode {
         //Initialize April Tag Detection
         aprilTagManager = new AprilTagManager(hardwareMap, true, RobotUtility.DEFAULT_WEBCAM_NAME);
         aprilTagManager.init();
+        RobotUtility.tagDetectionFilter = 0;
 
         telemetry.addLine("Robot Ready.");
         telemetry.update();

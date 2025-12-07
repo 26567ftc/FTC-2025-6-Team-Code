@@ -13,7 +13,7 @@ public class Auto_RED extends LinearOpMode{
     public static OmniDriveController driveController;
 
     public boolean shooting;
-    public boolean hasToggledShooter;
+    public boolean hasToggledShooter = true;
 
     public static ElapsedTime runtime = new ElapsedTime();
     final MotorDefinition[] DRIVE_MOTOR_DEFINITIONS = RobotUtility.DEFAULT_DRIVE_MOTOR_DEFINITIONS;
@@ -50,27 +50,26 @@ public class Auto_RED extends LinearOpMode{
         while (opModeIsActive()) {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
 
-            shooting = handleAutoDrive()? true : shooting;
+            boolean shootingTemp = handleAutoDrive();
+            if(!shooting) shooting = shootingTemp;
             driveController.printHeader(telemetry);
             driveController.printMotorPowerInfo(telemetry);
 
             aprilTagManager.getDetected();
 
             if(shooting){
-                runtime.reset();
                 hasToggledShooter = false;
             }
-            while(shooting){
-                shootingController.updateAuto(
-                        true,
-                        false,
-                        !hasToggledShooter, true, !hasToggledShooter);
 
+            shootingController.updateAuto(
+                    true,
+                    false,
+                    !hasToggledShooter, true, !hasToggledShooter);
+            if(!hasToggledShooter){
+                wait(3000);
                 hasToggledShooter = true;
-                if(runtime.seconds() > 3){
-                    shooting = false;
-                }
             }
+
 
 
             telemetry.update();

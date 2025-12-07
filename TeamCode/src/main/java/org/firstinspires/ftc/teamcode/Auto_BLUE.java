@@ -13,7 +13,7 @@ public class Auto_BLUE extends LinearOpMode{
     public static OmniDriveController driveController;
 
     public boolean shooting;
-    public boolean hasToggledShooter;
+    public boolean hasToggledShooter = true;
 
     public static ElapsedTime runtime = new ElapsedTime();
     final MotorDefinition[] DRIVE_MOTOR_DEFINITIONS = RobotUtility.DEFAULT_DRIVE_MOTOR_DEFINITIONS;
@@ -22,7 +22,7 @@ public class Auto_BLUE extends LinearOpMode{
 
     @Override
     public void runOpMode() throws InterruptedException {
-        RobotUtility.tagDetectionFilter = 2;
+        RobotUtility.tagDetectionFilter = 1;
 
         driveController = new OmniDriveController();
         RobotUtility.Hardware.Init(hardwareMap, DRIVE_MOTOR_DEFINITIONS, SHOOT_MOTOR_DEFINITIONS, this);
@@ -50,27 +50,26 @@ public class Auto_BLUE extends LinearOpMode{
         while (opModeIsActive()) {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
 
-            shooting = handleAutoDrive()? true : shooting;
+            boolean shootingTemp = handleAutoDrive();
+            if(!shooting) shooting = shootingTemp;
             driveController.printHeader(telemetry);
             driveController.printMotorPowerInfo(telemetry);
 
             aprilTagManager.getDetected();
 
             if(shooting){
-                runtime.reset();
                 hasToggledShooter = false;
             }
-            while(shooting){
-                shootingController.updateAuto(
-                        true,
-                        false,
-                        !hasToggledShooter, true, !hasToggledShooter);
 
+            shootingController.updateAuto(
+                    true,
+                    false,
+                    !hasToggledShooter, true, !hasToggledShooter);
+            if(!hasToggledShooter){
+                wait(3000);
                 hasToggledShooter = true;
-                if(runtime.seconds() > 3){
-                    shooting = false;
-                }
             }
+
 
 
             telemetry.update();
