@@ -32,7 +32,7 @@ public class ShootingController {
      * Call this each loop to update shooter state from gamepad and write telemetry.
      */
     public void update(){
-        updateAuto(
+        update(
                 /*Set Shooter Power LOW input*/ RobotUtility.Hardware.shootGamepad.dpadDownWasReleased(),
                 /*Set Shooter Power HIGH input*/ RobotUtility.Hardware.shootGamepad.dpadUpWasReleased(),
                 /*Enable Shooter input*/ RobotUtility.Hardware.shootGamepad.yWasReleased(),
@@ -40,7 +40,7 @@ public class ShootingController {
                 /*Enable Intake Input*/ RobotUtility.Hardware.shootGamepad.xWasReleased()
                 );
     }
-    public void updateAuto(boolean setDefaultPow, boolean setFarPow, boolean toggleShoter, boolean fire, boolean toggleIntake) {
+    public void update(boolean setDefaultPow, boolean setFarPow, boolean toggleShoter, boolean fire, boolean toggleIntake) {
         // Shoot power selection
         if (setDefaultPow)
             shootPower = RobotUtility.DEFAULT_SHOOT_POWER;
@@ -62,6 +62,30 @@ public class ShootingController {
         // Intake feeder control (X to active)
         if (toggleIntake)
             enableIntake = !enableIntake;
+
+        if(enableIntake)
+            intakeFeeder.setPower(1);
+        else
+            intakeFeeder.setPower(0);
+    }
+    public void updateAuto(boolean setDefaultPow, boolean setFarPow, boolean enableShooter, boolean fire, boolean enableIntake){
+        // Shoot power selection
+        if (setDefaultPow)
+            shootPower = RobotUtility.DEFAULT_SHOOT_POWER;
+        else if (setFarPow)
+            shootPower = RobotUtility.FAR_SHOOT_POWER;
+
+        // Enable/disable shooter
+        if (!enableShooter) shootPower = 0;
+
+        // Set shoot motors (motors are expected to be initialized by RobotUtility.Hardware.Init)
+        RobotUtility.Hardware.shootRightMotor.setPower(shootPower);
+        RobotUtility.Hardware.shootLeftMotor.setPower(shootPower);
+
+        // Shooter feeder control (A to fire)
+        if (!fire) shooterFeeder.setPosition(RobotUtility.FEEDER_ACTIVE_ANGLE);
+        else shooterFeeder.setPosition(RobotUtility.FEEDER_REST_ANGLE);
+
 
         if(enableIntake)
             intakeFeeder.setPower(1);

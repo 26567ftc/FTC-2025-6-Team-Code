@@ -39,7 +39,7 @@ public class OmniDriveController {
         moveRobot(-drive, strafe, turn);
         if (telemetry != null) telemetry.addData("Auto","Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
 
-        return Math.abs(drive) <= RobotUtility.DESTINATION_ERROR_BUFFER;
+        return Math.abs(rangeError) <= RobotUtility.DESTINATION_ERROR_BUFFER;
     }
 
     double leftFrontPower;

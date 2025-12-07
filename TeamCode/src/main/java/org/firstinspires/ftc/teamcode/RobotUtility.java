@@ -59,19 +59,19 @@ public class RobotUtility {
     public static final String DEFAULT_WEBCAM_NAME = "Webcam 1";
 
     // Auto-drive / AprilTag related defaults (moved from OpMode)
-    public static final double DEFAULT_DESIRED_DISTANCE = 12.0 * 4; //in inches (value is 4 ft)
+    public static final double DEFAULT_DESIRED_DISTANCE = 12.0 * 6.6; //in inches (value is 4 ft)
 
-    public static final double SPEED_GAIN  =  0.0028;
-    public static final double STRAFE_GAIN =  0.0028;
-    public static final double TURN_GAIN   =  0.0028;
-    public static final double DESTINATION_ERROR_BUFFER = 5; //Auto drive is consider complete when distance/drive error >= to this
+    public static final double SPEED_GAIN  =  0.6 / 25; // Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
+    public static final double STRAFE_GAIN =  0.475 / 25.0;
+    public static final double TURN_GAIN   =  0.35 / 25.0;
+    public static final double DESTINATION_ERROR_BUFFER = 2; //Auto drive is consider complete when distance/drive error >= to this
 
     public static final double MAX_AUTO_SPEED = 1;
     public static final double MAX_AUTO_STRAFE= 1;
     public static final double MAX_AUTO_TURN  = 1;
 
-    public static final float DEFAULT_SHOOT_POWER = 0.6f;
-    public static final float FAR_SHOOT_POWER = 0.7f;
+    public static final float DEFAULT_SHOOT_POWER = 0.58f;
+    public static final float FAR_SHOOT_POWER = 0.68f;
 
     public static final float FEEDER_ACTIVE_ANGLE = 0.5f;
     public static final float FEEDER_REST_ANGLE = 0f;

@@ -45,38 +45,32 @@ public class Auto_BLUE extends LinearOpMode{
         waitForStart();
         runtime.reset();
 
+        shootingController.update(
+                true,
+                false,
+                true, false, true);
+
 
         while (opModeIsActive()) {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
 
             boolean shootingTemp = handleAutoDrive();
-            if(!shooting) shooting = shootingTemp;
             driveController.printHeader(telemetry);
             driveController.printMotorPowerInfo(telemetry);
 
             aprilTagManager.getDetected();
 
-            if(shooting){
-                hasToggledShooter = false;
-            }
-
             shootingController.updateAuto(
                     true,
                     false,
-                    !hasToggledShooter, true, !hasToggledShooter);
-            if(!hasToggledShooter){
-                wait(3000);
-                hasToggledShooter = true;
-            }
-
-
+                    true, shootingTemp, true);
 
             telemetry.update();
         }
     }
 
     public boolean handleAutoDrive(){
-        while (runtime.seconds() <= 1 && !aprilTagManager.targetFound){
+        while (runtime.seconds() <= 3 && !aprilTagManager.targetFound){
             driveController.moveRobot(-0.2, 0,0);
             aprilTagManager.getDetected();
 
