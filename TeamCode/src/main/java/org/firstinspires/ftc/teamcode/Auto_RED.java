@@ -22,8 +22,6 @@ public class Auto_RED extends LinearOpMode{
 
     @Override
     public void runOpMode() throws InterruptedException {
-        RobotUtility.tagDetectionFilter = 1;
-
         driveController = new OmniDriveController();
         RobotUtility.Hardware.Init(hardwareMap, DRIVE_MOTOR_DEFINITIONS, SHOOT_MOTOR_DEFINITIONS, this);
 
@@ -31,7 +29,7 @@ public class Auto_RED extends LinearOpMode{
         shootingController = new ShootingController(hardwareMap);
 
         //Initialize April Tag Detection
-        aprilTagManager = new AprilTagManager(hardwareMap, true, RobotUtility.DEFAULT_WEBCAM_NAME);
+        aprilTagManager = new AprilTagManager(hardwareMap, true, RobotUtility.DEFAULT_WEBCAM_NAME, 1);
         aprilTagManager.init();
         driveController = new OmniDriveController();
         RobotUtility.Hardware.Init(hardwareMap, DRIVE_MOTOR_DEFINITIONS, SHOOT_MOTOR_DEFINITIONS, this);

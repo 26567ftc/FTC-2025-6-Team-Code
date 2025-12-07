@@ -26,10 +26,11 @@ public class AprilTagManager {
     private VisionPortal visionPortal;
     private AprilTagProcessor aprilTag;
 
-    public AprilTagManager(HardwareMap hardwareMap, boolean useWebcam, String webcamName) {
+    public AprilTagManager(HardwareMap hardwareMap, boolean useWebcam, String webcamName, int tagDetectionFilter) {
         this.hardwareMap = hardwareMap;
         this.useWebcam = useWebcam;
         this.webcamName = webcamName;
+        this.tagDetectionFilter = tagDetectionFilter;
     }
 
     public void init() {
@@ -53,7 +54,7 @@ public class AprilTagManager {
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
         for (AprilTagDetection detection : currentDetections)
             if (detection.metadata != null)
-                if (RobotUtility.FilterTagID(detection.id)) { //  Check to see if we want to track towards this tag.
+                if (FilterTagID(detection.id)) { //  Check to see if we want to track towards this tag.
                     targetFound = true;
                     desiredTag = detection;
                     break;
@@ -79,5 +80,19 @@ public class AprilTagManager {
         try { Thread.sleep(20); } catch (InterruptedException ignored) {}
         GainControl gainControl = visionPortal.getCameraControl(GainControl.class);
         gainControl.setGain(gain);
+    }
+    /// 0 = Anything,
+    /// 1 = RED Only,
+    /// 2 = BLUE Only
+    public int tagDetectionFilter = 0;
+
+    public boolean FilterTagID(int tagID){
+        if(tagDetectionFilter == 1){
+            return tagID == RobotUtility.RED_GOAL_TAG_ID;
+        }
+        else if(tagDetectionFilter == 2){
+            return  tagID == RobotUtility.BLUE_GOAL_TAG_ID;
+        }
+        else return true;
     }
 }

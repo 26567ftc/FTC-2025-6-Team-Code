@@ -79,20 +79,7 @@ public class RobotUtility {
     public final static int BLUE_GOAL_TAG_ID = 20;
     public final static int RED_GOAL_TAG_ID = 24;
 
-    /// 0 = Anything
-    /// 1 = RED Only
-    /// 2 = BLUE Only
-    public static int tagDetectionFilter = 0;
 
-    public static boolean FilterTagID(int tagID){
-        if(tagDetectionFilter == 1){
-            return tagID == RED_GOAL_TAG_ID;
-        }
-        else if(tagDetectionFilter == 2){
-            return  tagID == BLUE_GOAL_TAG_ID;
-        }
-        else return true;
-    }
 
     public static final float DEFAULT_SPEED_COEF = 0.5f;
     public static final float SLOW_SPEED_COEF = 0.25f;
