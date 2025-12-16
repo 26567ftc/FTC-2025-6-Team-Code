@@ -3,22 +3,26 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.ftccommon.SoundPlayer;
 
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+
+import java.io.File;
 
 @Autonomous
 public class Auto_BLUE extends LinearOpMode{
     ShootingController shootingController;
     AprilTagManager aprilTagManager;
     public static OmniDriveController driveController;
-
-    public boolean shooting;
-    public boolean hasToggledShooter = true;
-
+    public boolean hasShot;
     public static ElapsedTime runtime = new ElapsedTime();
+
     final MotorDefinition[] DRIVE_MOTOR_DEFINITIONS = RobotUtility.DEFAULT_DRIVE_MOTOR_DEFINITIONS;
 
     final MotorDefinition[] SHOOT_MOTOR_DEFINITIONS = RobotUtility.DEFAULT_SHOOT_MOTOR_DEFINITIONS;
+
+    private String soundPath = "/FIRST/blocks/sounds";
+    private File audioFile   = new File("/sdcard" + soundPath + "/audio.wav");
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -45,10 +49,12 @@ public class Auto_BLUE extends LinearOpMode{
         waitForStart();
         runtime.reset();
 
+
         shootingController.update(
                 true,
                 false,
                 true, false, true);
+
 
 
         while (opModeIsActive()) {
@@ -64,7 +70,7 @@ public class Auto_BLUE extends LinearOpMode{
                     true,
                     false,
                     true, shootingTemp, true);
-
+            
             telemetry.update();
         }
     }

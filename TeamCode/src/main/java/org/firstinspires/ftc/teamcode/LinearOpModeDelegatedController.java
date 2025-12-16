@@ -33,7 +33,13 @@ public class LinearOpModeDelegatedController extends LinearOpMode {
         //Initialize April Tag Detection
         aprilTagManager = new AprilTagManager(hardwareMap, true, RobotUtility.DEFAULT_WEBCAM_NAME, 0);
         aprilTagManager.init();
+        driveController = new OmniDriveController();
+        RobotUtility.Hardware.Init(hardwareMap, DRIVE_MOTOR_DEFINITIONS, SHOOT_MOTOR_DEFINITIONS, this);
 
+        aprilTagManager.setManualExposure(6, 250);  // Use low exposure time to reduce motion blur
+
+        // Wait for driver to press start
+        telemetry.addData("Camera preview on/off", "3 dots, Camera Stream");
         telemetry.addLine("Robot Ready.");
         telemetry.update();
 
@@ -56,12 +62,16 @@ public class LinearOpModeDelegatedController extends LinearOpMode {
             telemetry.update();
         }
     }
-    public void handleAutoDrive(){
+
+    public void handleAutoDrive() {
         if (aprilTagManager.getDetected()) {
             AprilTagDetection desiredTag = aprilTagManager.desiredTag;
 
             if (RobotUtility.Hardware.DriveGamepad.dpad_right)
                 driveController.autoDriveToAprilTag(desiredTag, telemetry);
+
+            else if (RobotUtility.Hardware.DriveGamepad.dpad_left)
+                driveController.autoDriveToAprilTag(desiredTag, telemetry, 0);
 
             telemetry.addData("\n>","HOLD Left-Bumper to Drive to Target\n");
             telemetry.addData("Found", "ID %d (%s)", desiredTag.id, desiredTag.metadata.name);
@@ -70,6 +80,7 @@ public class LinearOpModeDelegatedController extends LinearOpMode {
             telemetry.addData("Yaw","%3.0f degrees", desiredTag.ftcPose.yaw);
         }
     }
+
     private void handleDrive() {
         float speedCoef = RobotUtility.DEFAULT_SPEED_COEF;
 

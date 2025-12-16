@@ -26,11 +26,15 @@ public class OmniDriveController {
      * Uses constants from RobotUtility.
      */
     public boolean autoDriveToAprilTag(AprilTagDetection desiredTag, Telemetry telemetry) {
+        return autoDriveToAprilTag(desiredTag, telemetry, 1);
+    }
+
+    public boolean autoDriveToAprilTag(AprilTagDetection desiredTag, Telemetry telemetry, double aimErrorCoef) {
         if (desiredTag == null) return false;
 
-        double rangeError = (desiredTag.ftcPose.range - RobotUtility.DEFAULT_DESIRED_DISTANCE);
+        double rangeError = (desiredTag.ftcPose.range - RobotUtility.DEFAULT_DESIRED_DISTANCE) * aimErrorCoef;
         double headingError = desiredTag.ftcPose.bearing;
-        double yawError = desiredTag.ftcPose.yaw;
+        double yawError = desiredTag.ftcPose.yaw * aimErrorCoef;
 
         double drive = Range.clip(rangeError * RobotUtility.SPEED_GAIN, -RobotUtility.MAX_AUTO_SPEED, RobotUtility.MAX_AUTO_SPEED);
         double turn = Range.clip(headingError * RobotUtility.TURN_GAIN, -RobotUtility.MAX_AUTO_TURN, RobotUtility.MAX_AUTO_TURN);
@@ -39,7 +43,9 @@ public class OmniDriveController {
         moveRobot(-drive, strafe, turn);
         if (telemetry != null) telemetry.addData("Auto","Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
 
-        return Math.abs(rangeError) <= RobotUtility.DESTINATION_ERROR_BUFFER;
+        return Math.abs(rangeError) <= RobotUtility.DESTINATION_ERROR_BUFFER
+                && Math.abs(headingError) <= RobotUtility.DESTINATION_ERROR_BUFFER
+                && Math.abs(yawError) <= RobotUtility.DESTINATION_ERROR_BUFFER;
     }
 
     double leftFrontPower;

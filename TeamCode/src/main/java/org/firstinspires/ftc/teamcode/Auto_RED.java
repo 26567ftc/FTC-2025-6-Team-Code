@@ -45,6 +45,11 @@ public class Auto_RED extends LinearOpMode{
 
         runtime.reset();
 
+        shootingController.update(
+                true,
+                false,
+                true, false, true);
+
         while (opModeIsActive()) {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
 
