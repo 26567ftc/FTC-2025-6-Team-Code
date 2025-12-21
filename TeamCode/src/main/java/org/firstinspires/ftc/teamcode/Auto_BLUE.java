@@ -21,6 +21,11 @@ public class Auto_BLUE extends LinearOpMode{
 
     final MotorDefinition[] SHOOT_MOTOR_DEFINITIONS = RobotUtility.DEFAULT_SHOOT_MOTOR_DEFINITIONS;
 
+    // Multi-shot cycle configuration
+    private static final int SHOOT_CYCLES = 3;
+    private static final long SHOOT_FIRE_MS = 400; // ms to hold feeder in fire position
+    private static final long SHOOT_REST_MS = 600; // ms to wait between shots
+
     private String soundPath = "/FIRST/blocks/sounds";
     private File audioFile   = new File("/sdcard" + soundPath + "/audio.wav");
 
@@ -65,12 +70,6 @@ public class Auto_BLUE extends LinearOpMode{
             driveController.printMotorPowerInfo(telemetry);
 
             aprilTagManager.getDetected();
-
-            shootingController.updateAuto(
-                    true,
-                    false,
-                    true, shootingTemp, true);
-            
             telemetry.update();
         }
     }
@@ -102,8 +101,29 @@ public class Auto_BLUE extends LinearOpMode{
             telemetry.addData("Bearing","%3.0f degrees", desiredTag.ftcPose.bearing);
             telemetry.addData("Yaw","%3.0f degrees", desiredTag.ftcPose.yaw);
 
-            return driveController.autoDriveToAprilTag(desiredTag, telemetry);
+            boolean reached = driveController.autoDriveToAprilTag(desiredTag, telemetry);
+            if (reached) {
+                // Perform multiple shooting cycles once we've arrived
+                performShootingCycles(SHOOT_CYCLES, SHOOT_FIRE_MS, SHOOT_REST_MS);
+                SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, audioFile);
+                // we've handled firing here; return false so the main loop doesn't try to fire again
+                return false;
+            }
+            return reached;
         }
         return false;
+    }
+
+    // Performs the requested number of fire/rest cycles using the ShootingController
+    public void performShootingCycles(int cycles, long fireMs, long restMs) {
+        for (int i = 0; i < cycles && opModeIsActive(); i++) {
+            // Fire (feeder active = true)
+            shootingController.updateAuto(true, false, true, true, true);
+            sleep(fireMs);
+
+            // Stop firing (feeder inactive)
+            shootingController.updateAuto(true, false, true, false, true);
+            sleep(restMs);
+        }
     }
 }
