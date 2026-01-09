@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -92,7 +93,17 @@ public class ShootingController {
         else
             intakeFeeder.setPower(0);
     }
+    public void performShootingCycles(int cycles, long fireMs, long restMs, LinearOpMode opMode) {
+        for (int i = 0; i < cycles && opMode.opModeIsActive(); i++) {
+            // Fire (feeder active = true)
+            updateAuto(true, false, true, true, true);
+            opMode.sleep(fireMs);
 
+            // Stop firing (feeder inactive)
+            updateAuto(true, false, true, false, true);
+            opMode.sleep(restMs);
+        }
+    }
     public void printTelemetry(Telemetry telemetry) {
         telemetry.addLine("");
         telemetry.addLine("Shooter Info:");

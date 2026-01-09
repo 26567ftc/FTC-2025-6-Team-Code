@@ -73,13 +73,20 @@ public class RobotUtility {
     public static final float DEFAULT_SHOOT_POWER = 0.58f;
     public static final float FAR_SHOOT_POWER = 0.68f;
 
-    public static final float FEEDER_ACTIVE_ANGLE = 0.5f;
+    public static final float FEEDER_ACTIVE_ANGLE = 0.415f;
     public static final float FEEDER_REST_ANGLE = 0f;
+
+    //Auto Multi-Shoot Configuration
+    public static final int SHOOT_CYCLES = 3;
+    public static final long SHOOT_FIRE_MS = 400; // ms to hold feeder in fire position
+    public static final long SHOOT_REST_MS = 3000; // ms to wait between shots
 
     public final static int BLUE_GOAL_TAG_ID = 20;
     public final static int RED_GOAL_TAG_ID = 24;
 
-
+    public final static int OBELISK_1_TAG_ID = 21;
+    public final static int OBELISK_2_TAG_ID = 22;
+    public final static int OBELISK_3_TAG_ID = 23;
 
     public static final float DEFAULT_SPEED_COEF = 0.5f;
     public static final float SLOW_SPEED_COEF = 0.25f;

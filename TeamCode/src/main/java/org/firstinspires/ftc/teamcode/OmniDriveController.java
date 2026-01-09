@@ -26,13 +26,15 @@ public class OmniDriveController {
      * Uses constants from RobotUtility.
      */
     public boolean autoDriveToAprilTag(AprilTagDetection desiredTag, Telemetry telemetry) {
-        return autoDriveToAprilTag(desiredTag, telemetry, 1);
+        return autoDriveToAprilTag(desiredTag, telemetry, 1, RobotUtility.DEFAULT_DESIRED_DISTANCE);
     }
-
     public boolean autoDriveToAprilTag(AprilTagDetection desiredTag, Telemetry telemetry, double aimErrorCoef) {
+        return autoDriveToAprilTag(desiredTag, telemetry, aimErrorCoef, RobotUtility.DEFAULT_DESIRED_DISTANCE);
+    }
+    public boolean autoDriveToAprilTag(AprilTagDetection desiredTag, Telemetry telemetry, double aimErrorCoef, double targetDist) {
         if (desiredTag == null) return false;
 
-        double rangeError = (desiredTag.ftcPose.range - RobotUtility.DEFAULT_DESIRED_DISTANCE) * aimErrorCoef;
+        double rangeError = (desiredTag.ftcPose.range - targetDist) * aimErrorCoef;
         double headingError = desiredTag.ftcPose.bearing;
         double yawError = desiredTag.ftcPose.yaw * aimErrorCoef;
 

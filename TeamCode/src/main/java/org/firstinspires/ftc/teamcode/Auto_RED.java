@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 import java.io.File;
@@ -15,18 +16,15 @@ public class Auto_RED extends LinearOpMode{
     AprilTagManager aprilTagManager;
     public static OmniDriveController driveController;
 
-    public boolean shooting;
-    public boolean hasToggledShooter = true;
+    public boolean hasFinishedShooting;
+    public boolean hasFinishedRetreating;
+    public ElapsedTime adjustmentTime = null;
 
     public static ElapsedTime runtime = new ElapsedTime();
     final MotorDefinition[] DRIVE_MOTOR_DEFINITIONS = RobotUtility.DEFAULT_DRIVE_MOTOR_DEFINITIONS;
 
     final MotorDefinition[] SHOOT_MOTOR_DEFINITIONS = RobotUtility.DEFAULT_SHOOT_MOTOR_DEFINITIONS;
 
-    // Multi-shot cycle configuration
-    private static final int SHOOT_CYCLES = 3;
-    private static final long SHOOT_FIRE_MS = 400; // ms to hold feeder in fire position
-    private static final long SHOOT_REST_MS = 600; // ms to wait between shots
     private String soundPath = "/FIRST/blocks/sounds";
     private File audioFile   = new File("/sdcard" + soundPath + "/audio.wav");
 
@@ -42,6 +40,11 @@ public class Auto_RED extends LinearOpMode{
         aprilTagManager = new AprilTagManager(hardwareMap, true, RobotUtility.DEFAULT_WEBCAM_NAME, 1);
         aprilTagManager.init();
         driveController = new OmniDriveController();
+
+        hasFinishedShooting = false;
+        hasFinishedRetreating = false;
+        adjustmentTime = null;
+
         RobotUtility.Hardware.Init(hardwareMap, DRIVE_MOTOR_DEFINITIONS, SHOOT_MOTOR_DEFINITIONS, this);
 
         aprilTagManager.setManualExposure(6, 250);  // Use low exposure time to reduce motion blur
@@ -63,11 +66,58 @@ public class Auto_RED extends LinearOpMode{
         while (opModeIsActive()) {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
 
-            boolean shootingTemp = handleAutoDrive();
-            driveController.printHeader(telemetry);
-            driveController.printMotorPowerInfo(telemetry);
+            if(hasFinishedShooting == false)
+            {
+                telemetry.addLine("Shooting State");
+                telemetry.addLine("");
+
+                boolean reached = handleAutoDrive();
+
+                if(reached)
+                    hasFinishedShooting = true;
+            }
+
+
 
             aprilTagManager.getDetected();
+
+            if(hasFinishedShooting && hasFinishedRetreating == false){
+
+                telemetry.addLine("Retreating State");
+                telemetry.addLine("");
+
+                //Runs after robot has finished Auto Shooting
+                aprilTagManager.getDetected();
+                aprilTagManager.tagDetectionFilter = 3; //Obelisk Only
+                boolean reached = PreformRetreat();
+
+                if(reached)
+                    hasFinishedRetreating = true;
+            }
+            if(hasFinishedShooting && hasFinishedRetreating){
+                if(adjustmentTime == null){
+                    adjustmentTime = new ElapsedTime();
+                    adjustmentTime.reset();
+                }
+
+                while (adjustmentTime != null && adjustmentTime.seconds() < 1){
+                    driveController.moveRobot(0, -1, 0);
+                    telemetry.addLine("Adjustment State");
+                    telemetry.addLine("");
+
+                    driveController.printHeader(telemetry);
+                    driveController.printMotorPowerInfo(telemetry);
+                    telemetry.update();
+                }
+
+                telemetry.addLine("Final State");
+                telemetry.addLine("");
+
+                driveController.moveRobot(0,0,0);
+            }
+
+            driveController.printHeader(telemetry);
+            driveController.printMotorPowerInfo(telemetry);
             telemetry.update();
         }
     }
@@ -102,26 +152,41 @@ public class Auto_RED extends LinearOpMode{
             boolean reached = driveController.autoDriveToAprilTag(desiredTag, telemetry);
             if (reached) {
                 // Perform multiple shooting cycles once we've arrived
-                performShootingCycles(SHOOT_CYCLES, SHOOT_FIRE_MS, SHOOT_REST_MS);
+                shootingController.performShootingCycles(RobotUtility.SHOOT_CYCLES, RobotUtility.SHOOT_FIRE_MS, RobotUtility.SHOOT_REST_MS, this);
                 // we've handled firing here; return false so the main loop doesn't try to fire again
                 SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, audioFile);
-                return false;
+                return true;
             }
-            return reached;
+            return false;
         }
         return false;
     }
 
-    // Performs the requested number of fire/rest cycles using the ShootingController
-    public void performShootingCycles(int cycles, long fireMs, long restMs) {
-        for (int i = 0; i < cycles && opModeIsActive(); i++) {
-            // Fire (feeder active = true)
-            shootingController.updateAuto(true, false, true, true, true);
-            sleep(fireMs);
+    public boolean PreformRetreat()
+    {
+        while (!aprilTagManager.targetFound) {
+            driveController.moveRobot(0,0, 0.5f);
+            aprilTagManager.getDetected();
 
-            // Stop firing (feeder inactive)
-            shootingController.updateAuto(true, false, true, false, true);
-            sleep(restMs);
+            telemetry.addLine("Scanning for april tag");
+            telemetry.update();
         }
+
+        aprilTagManager.getDetected();
+
+        if(aprilTagManager.targetFound) {
+            AprilTagDetection desiredTag = aprilTagManager.desiredTag;
+
+            telemetry.addData("Found", "ID %d (%s)", desiredTag.id, desiredTag.metadata.name);
+            telemetry.addData("Range",  "%5.1f inches", desiredTag.ftcPose.range);
+            telemetry.addData("Bearing","%3.0f degrees", desiredTag.ftcPose.bearing);
+            telemetry.addData("Yaw","%3.0f degrees", desiredTag.ftcPose.yaw);
+
+            boolean reached = driveController.autoDriveToAprilTag(desiredTag, telemetry,
+                    1, RobotUtility.DEFAULT_DESIRED_DISTANCE * 2.1);
+
+            return reached;
+        }
+        return false;
     }
 }

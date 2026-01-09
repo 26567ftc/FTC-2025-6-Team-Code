@@ -52,6 +52,9 @@ public class AprilTagManager {
 
     public boolean getDetected() {
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+        targetFound = false;
+        desiredTag = null;
+
         for (AprilTagDetection detection : currentDetections)
             if (detection.metadata != null)
                 if (FilterTagID(detection.id)) { //  Check to see if we want to track towards this tag.
@@ -84,6 +87,7 @@ public class AprilTagManager {
     /// 0 = Anything,
     /// 1 = RED Only,
     /// 2 = BLUE Only
+    /// 3 = Obelisk
     public int tagDetectionFilter = 0;
 
     public boolean FilterTagID(int tagID){
@@ -92,6 +96,11 @@ public class AprilTagManager {
         }
         else if(tagDetectionFilter == 2){
             return  tagID == RobotUtility.BLUE_GOAL_TAG_ID;
+        }
+        else if (tagDetectionFilter == 3) {
+            return  tagID == RobotUtility.OBELISK_1_TAG_ID
+                    || tagID == RobotUtility.OBELISK_2_TAG_ID
+                    || tagID == RobotUtility.OBELISK_3_TAG_ID;
         }
         else return true;
     }
