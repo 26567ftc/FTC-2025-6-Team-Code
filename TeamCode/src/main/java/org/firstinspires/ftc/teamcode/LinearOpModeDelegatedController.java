@@ -89,10 +89,11 @@ public class LinearOpModeDelegatedController extends LinearOpMode {
         else if (RobotUtility.Hardware.DriveGamepad.right_bumper)
             speedCoef = RobotUtility.FAST_SPEED_COEF;
 
+        double yawFromTriggers = (-RobotUtility.Hardware.DriveGamepad.left_trigger + RobotUtility.Hardware.DriveGamepad.right_trigger) * 0.85;
         OmniDriveController.DriveInput input = new OmniDriveController.DriveInput(
                 RobotUtility.Hardware.DriveGamepad.left_stick_y,
                 -RobotUtility.Hardware.DriveGamepad.left_stick_x,
-                -RobotUtility.Hardware.DriveGamepad.right_stick_x,
+                -(RobotUtility.Hardware.DriveGamepad.right_stick_x + yawFromTriggers),
                 speedCoef
         );
 

@@ -95,7 +95,7 @@ public class Auto_BLUE extends LinearOpMode{
                 if(reached)
                     hasFinishedRetreating = true;
             }
-            if(hasFinishedShooting && hasFinishedRetreating){
+            /*if(hasFinishedShooting && hasFinishedRetreating){
                 if(adjustmentTime == null){
                     adjustmentTime = new ElapsedTime();
                     adjustmentTime.reset();
@@ -115,7 +115,7 @@ public class Auto_BLUE extends LinearOpMode{
                 telemetry.addLine("");
 
                 driveController.moveRobot(0,0,0);
-            }
+            }*/
 
             driveController.printHeader(telemetry);
             driveController.printMotorPowerInfo(telemetry);
@@ -125,7 +125,7 @@ public class Auto_BLUE extends LinearOpMode{
 
     public boolean handleAutoDrive(){
         while (runtime.seconds() <= 3 && !aprilTagManager.targetFound){
-            driveController.moveRobot(-0.2, 0,0);
+            driveController.moveRobot(-0.3, 0,0);
             aprilTagManager.getDetected();
 
             telemetry.addLine("Moving Away from wall");
@@ -133,7 +133,7 @@ public class Auto_BLUE extends LinearOpMode{
         }
 
         while (!aprilTagManager.targetFound) {
-            driveController.moveRobot(0,0, 0.5f);
+            driveController.moveRobot(0,0, 0.25f);
             aprilTagManager.getDetected();
 
             telemetry.addLine("Scanning for april tag");
