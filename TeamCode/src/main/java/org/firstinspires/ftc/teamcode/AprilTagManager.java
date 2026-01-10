@@ -84,6 +84,21 @@ public class AprilTagManager {
         GainControl gainControl = visionPortal.getCameraControl(GainControl.class);
         gainControl.setGain(gain);
     }
+    public void setAutoExposure() {
+        if (visionPortal == null) return;
+
+        // Wait until streaming
+        while (visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {
+            try { Thread.sleep(20); } catch (InterruptedException ignored) {}
+        }
+
+        ExposureControl exposureControl = visionPortal.getCameraControl(ExposureControl.class);
+
+        if (exposureControl.getMode() != ExposureControl.Mode.Auto) {
+            exposureControl.setMode(ExposureControl.Mode.Auto);
+            try { Thread.sleep(50); } catch (InterruptedException ignored) {}
+        }
+    }
     /// 0 = Anything,
     /// 1 = RED Only,
     /// 2 = BLUE Only

@@ -46,7 +46,7 @@ public class Auto_BLUE extends LinearOpMode{
 
         RobotUtility.Hardware.Init(hardwareMap, DRIVE_MOTOR_DEFINITIONS, SHOOT_MOTOR_DEFINITIONS, this);
 
-        aprilTagManager.setManualExposure(6, 250);  // Use low exposure time to reduce motion blur
+        aprilTagManager.setAutoExposure();
 
         // Wait for driver to press start
         telemetry.addData("Camera preview on/off", "3 dots, Camera Stream");
@@ -102,7 +102,7 @@ public class Auto_BLUE extends LinearOpMode{
                 }
 
                 while (adjustmentTime != null && adjustmentTime.seconds() < 1){
-                    driveController.moveRobot(0, -1, 0);
+                    driveController.moveRobot(0, 1, 0);
                     telemetry.addLine("Adjustment State");
                     telemetry.addLine("");
 
