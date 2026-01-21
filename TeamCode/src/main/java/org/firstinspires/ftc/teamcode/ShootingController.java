@@ -53,8 +53,8 @@ public class ShootingController {
         if (!enableShooter) shootPower = 0;
 
         // Set shoot motors (motors are expected to be initialized by RobotUtility.Hardware.Init)
-        RobotUtility.Hardware.shootRightMotor.setPower(shootPower);
-        RobotUtility.Hardware.shootLeftMotor.setPower(shootPower);
+        RobotUtility.Hardware.shootRightMotor.setVelocity(shootPower);
+        RobotUtility.Hardware.shootLeftMotor.setVelocity(shootPower);
 
         // Shooter feeder control (A to fire)
         if (!fire) shooterFeeder.setPosition(RobotUtility.FEEDER_ACTIVE_ANGLE);
@@ -80,8 +80,8 @@ public class ShootingController {
         if (!enableShooter) shootPower = 0;
 
         // Set shoot motors (motors are expected to be initialized by RobotUtility.Hardware.Init)
-        RobotUtility.Hardware.shootRightMotor.setPower(shootPower);
-        RobotUtility.Hardware.shootLeftMotor.setPower(shootPower);
+        RobotUtility.Hardware.shootRightMotor.setVelocity(shootPower);
+        RobotUtility.Hardware.shootLeftMotor.setVelocity(shootPower);
 
         // Shooter feeder control (A to fire)
         if (!fire) shooterFeeder.setPosition(RobotUtility.FEEDER_ACTIVE_ANGLE);

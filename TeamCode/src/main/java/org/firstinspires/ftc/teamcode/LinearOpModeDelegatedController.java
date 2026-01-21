@@ -36,7 +36,7 @@ public class LinearOpModeDelegatedController extends LinearOpMode {
         driveController = new OmniDriveController();
         RobotUtility.Hardware.Init(hardwareMap, DRIVE_MOTOR_DEFINITIONS, SHOOT_MOTOR_DEFINITIONS, this);
 
-        aprilTagManager.setManualExposure(6, 250);  // Use low exposure time to reduce motion blur
+        aprilTagManager.setAutoExposure();
 
         // Wait for driver to press start
         telemetry.addData("Camera preview on/off", "3 dots, Camera Stream");

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -9,7 +10,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Quaternion;
 
 public class RobotUtility {
     public static class Hardware{
-        public static DcMotor leftFrontMotor, rightFrontMotor,
+        public static DcMotorEx leftFrontMotor, rightFrontMotor,
                 leftBackMotor, rightBackMotor,
                 shootLeftMotor, shootRightMotor
                 ;
@@ -59,19 +60,19 @@ public class RobotUtility {
     public static final String DEFAULT_WEBCAM_NAME = "Webcam 1";
 
     // Auto-drive / AprilTag related defaults (moved from OpMode)
-    public static final double DEFAULT_DESIRED_DISTANCE = 12.0 * 6.6; //in inches (value is 4 ft)
+    public static final double DEFAULT_DESIRED_DISTANCE = 12.0 * 4.2; //in inches (4.2ft)
 
     public static final double SPEED_GAIN  =  0.6 / 25; // Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
     public static final double STRAFE_GAIN =  0.475 / 25.0;
     public static final double TURN_GAIN   =  0.35 / 25.0;
-    public static final double DESTINATION_ERROR_BUFFER = 2; //Auto drive is consider complete when distance/drive error >= to this
+    public static final double DESTINATION_ERROR_BUFFER = 1.75; //Auto drive is consider complete when distance/drive error >= to this
 
     public static final double MAX_AUTO_SPEED = 1;
     public static final double MAX_AUTO_STRAFE= 1;
     public static final double MAX_AUTO_TURN  = 1;
 
-    public static final float DEFAULT_SHOOT_POWER = 0.58f;
-    public static final float FAR_SHOOT_POWER = 0.68f;
+    public static final float DEFAULT_SHOOT_POWER = 6000f * 0.5f;
+    public static final float FAR_SHOOT_POWER = 6000f * 0.68f;
 
     public static final float FEEDER_ACTIVE_ANGLE = 0.415f;
     public static final float FEEDER_REST_ANGLE = 0f;
@@ -94,14 +95,14 @@ public class RobotUtility {
 
     // Default MotorDefinition arrays for convenience
     public static final MotorDefinition[] DEFAULT_DRIVE_MOTOR_DEFINITIONS = new MotorDefinition[] {
-            new MotorDefinition(FRONT_LEFT_MOTOR, DcMotor.Direction.FORWARD),
-            new MotorDefinition(BACK_LEFT_MOTOR, DcMotor.Direction.FORWARD),
-            new MotorDefinition(FRONT_RIGHT_MOTOR, DcMotor.Direction.REVERSE),
-            new MotorDefinition(BACK_RIGHT_MOTOR, DcMotor.Direction.REVERSE)
+            new MotorDefinition(FRONT_LEFT_MOTOR, DcMotor.Direction.FORWARD, false),
+            new MotorDefinition(BACK_LEFT_MOTOR, DcMotor.Direction.FORWARD, false),
+            new MotorDefinition(FRONT_RIGHT_MOTOR, DcMotor.Direction.REVERSE, false),
+            new MotorDefinition(BACK_RIGHT_MOTOR, DcMotor.Direction.REVERSE, false)
     };
 
     public static final MotorDefinition[] DEFAULT_SHOOT_MOTOR_DEFINITIONS = new MotorDefinition[] {
-            new MotorDefinition(SHOOT_LEFT_MOTOR, DcMotor.Direction.REVERSE),
-            new MotorDefinition(SHOOT_RIGHT_MOTOR, DcMotor.Direction.FORWARD)
+            new MotorDefinition(SHOOT_LEFT_MOTOR, DcMotor.Direction.REVERSE, true),
+            new MotorDefinition(SHOOT_RIGHT_MOTOR, DcMotor.Direction.FORWARD, true)
     };
 }

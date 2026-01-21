@@ -26,7 +26,7 @@ public class Auto_RED extends LinearOpMode{
     final MotorDefinition[] SHOOT_MOTOR_DEFINITIONS = RobotUtility.DEFAULT_SHOOT_MOTOR_DEFINITIONS;
 
     private String soundPath = "/FIRST/blocks/sounds";
-    private File audioFile   = new File("/sdcard" + soundPath + "/audio.wav");
+    private File audioFile   = new File("/sdcard" + soundPath + "/gold.wav");
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -125,8 +125,10 @@ public class Auto_RED extends LinearOpMode{
     }
 
     public boolean handleAutoDrive(){
+        aprilTagManager.setAutoExposure();
         while (runtime.seconds() <= 3 && !aprilTagManager.targetFound){
-            driveController.moveRobot(-0.3, 0,0);
+            aprilTagManager.setAutoExposure();
+            driveController.moveRobot(-0.25, 0,0);
             aprilTagManager.getDetected();
 
             telemetry.addLine("Moving Away from wall");
@@ -134,7 +136,8 @@ public class Auto_RED extends LinearOpMode{
         }
 
         while (!aprilTagManager.targetFound) {
-            driveController.moveRobot(0,0, 0.25f);
+            aprilTagManager.setAutoExposure();
+            driveController.moveRobot(0,0, 0.1f);
             aprilTagManager.getDetected();
 
             telemetry.addLine("Scanning for april tag");
@@ -144,6 +147,7 @@ public class Auto_RED extends LinearOpMode{
         aprilTagManager.getDetected();
 
         if(aprilTagManager.targetFound) {
+            aprilTagManager.setAutoExposure();
             AprilTagDetection desiredTag = aprilTagManager.desiredTag;
 
             telemetry.addData("Found", "ID %d (%s)", desiredTag.id, desiredTag.metadata.name);
@@ -166,14 +170,6 @@ public class Auto_RED extends LinearOpMode{
 
     public boolean PreformRetreat()
     {
-        while (!aprilTagManager.targetFound) {
-            driveController.moveRobot(0,0, 0.5f);
-            aprilTagManager.getDetected();
-
-            telemetry.addLine("Scanning for april tag");
-            telemetry.update();
-        }
-
         aprilTagManager.getDetected();
 
         if(aprilTagManager.targetFound) {
