@@ -23,9 +23,6 @@ public class Auto_BLUE extends LinearOpMode{
 
     final MotorDefinition[] SHOOT_MOTOR_DEFINITIONS = RobotUtility.DEFAULT_SHOOT_MOTOR_DEFINITIONS;
 
-    private String soundPath = "/FIRST/blocks/sounds";
-    private File audioFile   = new File("/sdcard" + soundPath + "/gold.wav");
-
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -46,7 +43,7 @@ public class Auto_BLUE extends LinearOpMode{
 
         RobotUtility.Hardware.Init(hardwareMap, DRIVE_MOTOR_DEFINITIONS, SHOOT_MOTOR_DEFINITIONS, this);
 
-        aprilTagManager.setAutoExposure();
+        aprilTagManager.setManualExposure(6, 2);
 
         // Wait for driver to press start
         telemetry.addData("Camera preview on/off", "3 dots, Camera Stream");
@@ -136,7 +133,7 @@ public class Auto_BLUE extends LinearOpMode{
 
         while (!aprilTagManager.targetFound) {
             aprilTagManager.setAutoExposure();
-            driveController.moveRobot(0,0, 0.1f);
+            driveController.moveRobot(0,0, 0.3f);
             aprilTagManager.getDetected();
 
             telemetry.addLine("Scanning for april tag");
@@ -158,7 +155,6 @@ public class Auto_BLUE extends LinearOpMode{
             if (reached) {
                 // Perform multiple shooting cycles once we've arrived
                 shootingController.performShootingCycles(RobotUtility.SHOOT_CYCLES, RobotUtility.SHOOT_FIRE_MS, RobotUtility.SHOOT_REST_MS, this);
-                SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, audioFile);
                 // we've handled firing here; return false so the main loop doesn't try to fire again
                 return false;
             }
