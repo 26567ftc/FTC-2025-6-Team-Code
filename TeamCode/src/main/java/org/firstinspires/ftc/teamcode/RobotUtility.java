@@ -62,17 +62,17 @@ public class RobotUtility {
     // Auto-drive / AprilTag related defaults (moved from OpMode)
     public static final double DEFAULT_DESIRED_DISTANCE = 12.0 * 4.2; //in inches (4.2ft)
 
-    public static final double SPEED_GAIN  =  0.6 / 25; // Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
-    public static final double STRAFE_GAIN =  0.475 / 25.0;
-    public static final double TURN_GAIN   =  0.35 / 25.0;
-    public static final double DESTINATION_ERROR_BUFFER = 1.75; //Auto drive is consider complete when distance/drive error >= to this
+    public static final double SPEED_GAIN  =  0.6 / 25; // Ramp up to ___% power at a 25 inch error.   (0.___ / 25.0)
+    public static final double STRAFE_GAIN =  0.5 / 25.0;
+    public static final double TURN_GAIN   =  0.5 / 25.0;
+    public static final double DESTINATION_ERROR_BUFFER = 2; //Auto drive is consider complete when distance/drive error <= to this
 
     public static final double MAX_AUTO_SPEED = 1;
     public static final double MAX_AUTO_STRAFE= 1;
     public static final double MAX_AUTO_TURN  = 1;
     public static final float Conversion = 0.4f;
-    public static final float DEFAULT_SHOOT_POWER = 6000f * 0.5f * Conversion;
-    public static final float FAR_SHOOT_POWER = 6000f * 0.68f * Conversion;
+    public static final float DEFAULT_SHOOT_POWER = 6000f * 0.525f * Conversion;
+    public static final float FAR_SHOOT_POWER = 6000f * 0.62f * Conversion;
 
     public static final float FEEDER_ACTIVE_ANGLE = 0.415f;
     public static final float FEEDER_REST_ANGLE = 0f;
@@ -81,7 +81,8 @@ public class RobotUtility {
     public static final int SHOOT_CYCLES = 3;
     public static final long SHOOT_FIRE_MS = 400; // ms to hold feeder in fire position
     public static final long SHOOT_REST_MS = 3000; // ms to wait between shots
-
+    public static final int EXPOSURE = 6;
+    public static final int CAM_GAIN = 100;
     public final static int BLUE_GOAL_TAG_ID = 20;
     public final static int RED_GOAL_TAG_ID = 24;
 

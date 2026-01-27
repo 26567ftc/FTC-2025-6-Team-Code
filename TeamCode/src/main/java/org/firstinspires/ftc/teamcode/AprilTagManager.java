@@ -37,7 +37,7 @@ public class AprilTagManager {
 
     public void init() {
         aprilTag = new AprilTagProcessor.Builder().build();
-        aprilTag.setDecimation(3);
+        aprilTag.setDecimation(2);
 
         if (useWebcam) {
             visionPortal = new VisionPortal.Builder()
