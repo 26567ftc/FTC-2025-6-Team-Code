@@ -36,7 +36,7 @@ public class OmniDriveController {
 
         double rangeError = (desiredTag.ftcPose.range - targetDist) * aimErrorCoef;
         double headingError = desiredTag.ftcPose.bearing;
-        double yawError = desiredTag.ftcPose.yaw * (aimErrorCoef + 0.1);
+        double yawError = desiredTag.ftcPose.yaw * aimErrorCoef;
 
         double drive = Range.clip(rangeError * RobotUtility.SPEED_GAIN, -RobotUtility.MAX_AUTO_SPEED, RobotUtility.MAX_AUTO_SPEED);
         double turn = Range.clip(headingError * RobotUtility.TURN_GAIN, -RobotUtility.MAX_AUTO_TURN, RobotUtility.MAX_AUTO_TURN);

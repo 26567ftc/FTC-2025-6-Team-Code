@@ -50,8 +50,8 @@ public class LinearOpModeDelegatedController extends LinearOpMode {
         while (opModeIsActive()) {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
 
-            if(!handleAutoDrive());
-                handleDrive();
+            handleAutoDrive();
+            handleDrive();
 
             driveController.printHeader(telemetry);
             driveController.printMotorPowerInfo(telemetry);
@@ -63,27 +63,22 @@ public class LinearOpModeDelegatedController extends LinearOpMode {
         }
     }
 
-    public boolean handleAutoDrive() {
+    public void handleAutoDrive() {
         if (aprilTagManager.getDetected()) {
-
             AprilTagDetection desiredTag = aprilTagManager.desiredTag;
 
-            telemetry.addData("\n>","HOLD Left/Right D-pad to Drive to Target\n");
+            if (RobotUtility.Hardware.DriveGamepad.dpad_right)
+                driveController.autoDriveToAprilTag(desiredTag, telemetry);
+
+            else if (RobotUtility.Hardware.DriveGamepad.dpad_left)
+                driveController.autoDriveToAprilTag(desiredTag, telemetry, 0);
+
+            telemetry.addData("\n>","HOLD Left-Bumper to Drive to Target\n");
             telemetry.addData("Found", "ID %d (%s)", desiredTag.id, desiredTag.metadata.name);
             telemetry.addData("Range",  "%5.1f inches", desiredTag.ftcPose.range);
             telemetry.addData("Bearing","%3.0f degrees", desiredTag.ftcPose.bearing);
             telemetry.addData("Yaw","%3.0f degrees", desiredTag.ftcPose.yaw);
-
-            if (RobotUtility.Hardware.DriveGamepad.dpad_left)
-                driveController.autoDriveToAprilTag(desiredTag, telemetry, 0);
-
-            else if (RobotUtility.Hardware.DriveGamepad.dpad_right){
-                driveController.autoDriveToAprilTag(desiredTag, telemetry);
-            }
-
-           return true;
         }
-        return  false;
     }
 
     private void handleDrive() {
