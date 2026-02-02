@@ -72,7 +72,7 @@ public class RobotUtility {
     public static final double MAX_AUTO_TURN  = 1;
     public static final float Conversion = 0.4f;
     public static final float DEFAULT_SHOOT_POWER = 6000f * 0.525f * Conversion;
-    public static final float FAR_SHOOT_POWER = 6000f * 0.62f * Conversion;
+    public static final float FAR_SHOOT_POWER = 6000f * 0.6f * Conversion;
 
     public static final float FEEDER_ACTIVE_ANGLE = 0.415f;
     public static final float FEEDER_REST_ANGLE = 0f;

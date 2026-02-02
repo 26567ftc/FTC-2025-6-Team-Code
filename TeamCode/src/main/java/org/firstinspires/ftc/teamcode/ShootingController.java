@@ -93,16 +93,22 @@ public class ShootingController {
         else
             intakeFeeder.setPower(0);
     }
-    public void performShootingCycles(int cycles, long fireMs, long restMs, LinearOpMode opMode) {
+    public boolean performShootingCycles(int cycles, long fireMs, long restMs, LinearOpMode opMode , boolean shootFar){
         for (int i = 0; i < cycles && opMode.opModeIsActive(); i++) {
             // Fire (feeder active = true)
-            updateAuto(true, false, true, true, true);
+            updateAuto(!shootFar, shootFar, true, true, true);
             opMode.sleep(fireMs);
 
             // Stop firing (feeder inactive)
-            updateAuto(true, false, true, false, true);
+            updateAuto(!shootFar, shootFar, true, false, true);
             opMode.sleep(restMs);
+            opMode.telemetry.update();
         }
+
+        return true;
+    }
+    public boolean performShootingCycles(int cycles, long fireMs, long restMs, LinearOpMode opMode) {
+        return performShootingCycles(cycles, fireMs, restMs, opMode, false);
     }
     public void printTelemetry(Telemetry telemetry) {
         telemetry.addLine("");
